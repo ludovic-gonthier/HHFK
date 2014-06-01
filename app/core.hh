@@ -3,9 +3,15 @@
 require_once "../vendor/autoload.php";
 
 use HHFK\Kernel;
+use HHFK\Controller\Controller;
+
+##TODO put core.hh at the root of project and then pass dir to Kernel
 
 function __print():string {
-	return "<html><h1>Welcome to HHFK</h1>" . Kernel::TEST . "</html>";
+	$c = new Controller();
+
+	$k = new Kernel(dirname(__DIR__));
+	return $c->index(Kernel::TEST);
 }
 
 echo __print();
