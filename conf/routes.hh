@@ -3,13 +3,12 @@
 use HHFK\Route\Route;
 use HHFK\Route\Router;
 
-Router::provide("/")
+Router::provide("/", "HHFK\Controller\Controller")
 	  ->setName("test")
-	  ->setRequestParam(Route::POST);
+	  ->setRequestType(Route::POST)
+	  ->setController("");
 
-Router::provide("/profile")
+// Router::provide("/profile", "HHFK\Controller\Controller")
+Router::provide("/profile", "Test\TestModule\Controller\TestController")
 	  ->setName("profil")
-	  ->setRequestParam(Route::GET);
-
-foreach (Router::provided() as $route)
-	echo "<p>ROUTE '" . $route->getName() . "':  " . $route->getRequestType() . "@" . $route->getPattern() . "</p>";
+	  ->setRequestType(Route::GET);

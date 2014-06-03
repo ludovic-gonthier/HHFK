@@ -11,7 +11,7 @@ function __print():string {
 	$c = new Controller();
 
 	$k = new Kernel(dirname(__DIR__));
-	return $c->index(Kernel::TEST);
+	return $c->index("PROD ENVIRONEMENT");
 }
 
 echo __print();
