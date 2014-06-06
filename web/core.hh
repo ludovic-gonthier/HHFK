@@ -1,13 +1,13 @@
 <?hh
 require_once "../vendor/autoload.php";
 
+date_default_timezone_set("Europe/Paris");
+
 use HHFK\Route\Router;
 use HHFK\Route\Url;
 use HHFK\Kernel;
 
-
-		// $module = new Test\TestModule\TestModule();
-// Kernel/OrW-e class to load configuration for specified environment
+// Kernel/Or W-e class to load configuration for specified environment
 $kernel = new Kernel();
 
-Router::resolve(new Url())->send();
+Router::getInstance()->resolve(new Url())->send();

@@ -4,39 +4,69 @@ namespace HHFK\Route;
 use HHFK\Exception\HHFKException;
 use HHFK\Http\Response;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class Router{
-    public static function provide(string $pattern, string $controller): Route
+    protected function __construct()
+    {
+        $this->_routes = new Map<string, Route>;
+    }
+
+    public function provide(string $pattern, string $controller): Route
     {
         $route = new Route($pattern, $controller);
-        if (!isset(self::$_routes)){
-            self::$_routes = new Vector<Route>();
+        if (!isset($this->_routes)){
         }
-        self::$_routes[] = $route;
+        $this->_routes[$pattern] = $route;
         return $route;
     }
 
-    public static function provided(): Vector<Route>
+    public function provided(): Vector<Route>
     {
-        return self::$_routes;
+        return $this->_routes;
     }
 
-    public static function resolve(Url $url): Response
+    public function resolve(Url $url): Response
     {
-        ##TODO
-        // Fetch the correct Route
-        $route = self::$_routes->get(0);
-
-        // Fetch the route controller
+        $route = $this->fetchRoute($url);
         $controller = new ($route->getController());
         // Attach route and url to request
+
+        ##TODO : ServiceProvider => store logger
+        $logger = new Logger(static::class);
+        $logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
+        $logger->addInfo($class . "->" . $route->getAction());
+
         $return = call_user_func_array(array($controller, $route->getAction()),
                                        $route->getDatas()->toArray());
         if ($return === false){
-            ##TODO
-            // Handle Error
+            ##TODO : Handle error
+            $logger->addInfo($class . "->" . $route->getAction() . " FAILED");
         }
         return $return;
     }
+    private function fetchRoute(Url $url): Route
+    {
+        $route = $this->_routes->get($url->getPath());
+        // route directly found
+        if ($route !== null)
+            return $route;
+        ## TODO : search for route with '{foo}'
+        // route with 
+        // foreach ()
+
+        throw new NotFoudException("No route match the pattern '" . $url->getPath() . "'");
+    }
+
+    public static function getInstance()
+    {
+        if (!isset(static::$_instance)){
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+    protected static Router $_instance = null;
     
-    private static Vector<Route> $_routes;
+    private Map<string, Route> $_routes;
 }

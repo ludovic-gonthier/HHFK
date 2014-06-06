@@ -8,6 +8,5 @@ class HomeController extends AController
 {
 	public function index(): Response
 	{
-
 	}
 }
