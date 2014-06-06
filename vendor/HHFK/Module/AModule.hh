@@ -5,21 +5,24 @@ use HHFK\Controller\AController;
 
 use HHFK\Exception\BadDirectoryException;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 abstract class AModule
 {
 	const string DEFAULT_CONTROLLER_FOLDER = "Controller",
 				 DEFAULT_VIEW_FOLDER = "View",
 				 DEFAULT_CONFIGURATION_FOLDER = "Configuration";
 
+	private Logger $_logger;
+
 	public function __construct()
 	{
 		$this->_controllers = new Vector<AController>();
 
-		$this->boot();
-	}
+		$this->_logger = new Logger(static::class);
+		$this->_logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
 
-	public function boot()
-	{
 		$this->loadConfigurations();
 		$this->registerControllers();
 	}
@@ -28,6 +31,7 @@ abstract class AModule
 	{
 
 	}
+
 	protected function registerControllers(): void
 	{
 		$files = \scandir($dirname = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER);
@@ -42,8 +46,14 @@ abstract class AModule
 				is_subclass_of($controller, "HHFK\Controller\AController") === false){
 				continue;
 			}
-			$controller::registerModule($this);
+			$this->_controllers[] = $controller;
+			$this->_logger->addInfo("Attaching '" . static::class . "' to " . $controller );
 		}
+	}
+
+	public function hasController(string $controller): bool
+	{
+		return $this->_controllers->linearSearch($controller) !== -1;
 	}
 
 	public function getNamespace(): string
@@ -54,6 +64,7 @@ abstract class AModule
 		}
 		return $this->_namespace;
 	}
+
 	public function getPath(): string
 	{
 		if (!isset($this->_path)) {
@@ -62,6 +73,7 @@ abstract class AModule
 		}
 		return $this->_path;
 	}
+
 	public function getName(): string
 	{
 		if (!isset($this->_name)) {

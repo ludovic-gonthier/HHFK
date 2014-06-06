@@ -41,6 +41,10 @@ class Kernel
 		}
 		return null;
 	}
+	public static function getModules()
+	{
+		return self::$_modules;
+	}
 
 
 	protected static Vector<AModule> $_modules;

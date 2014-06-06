@@ -16,16 +16,22 @@ abstract class AController{
 		protected Request $_request = null,
 		protected Response $_response = null)
 	{
-		var_dump("Constructed : " . static::class);
 		if ($this->_request === null) {
 			$this->_request = new Request;
 		}
 		if ($this->_response === null) {
 			$this->_response = new Response;
 		}
+		foreach (Kernel::getModules() as $module) {
+			if ($module->hasController(static::class)){
+				$this->_module = $module;
+				break;
+			}
+		}
+		if (!isset($this->_module)){
+			throw new HHFKException("Your controller is not attach to a module.");
+		}
 	}
-
-	abstract public function index(): Response;
 
 	protected function redirect($html): Response
 	{
@@ -48,14 +54,14 @@ abstract class AController{
 		return $this->_response->render($template, $module);
 	}
 
-	public static function registerModule(AModule $module): void
+	public function registerModule(AModule $module): void
 	{
-		self::$_module = $module;
+		$this->_module = $module;
 	}
 	public function getModule(): AModule
 	{
-		return self::$_module;
+		return $this->_module;
 	}
 
-	protected static AModule $_module;
+	protected AModule $_module;
 }
