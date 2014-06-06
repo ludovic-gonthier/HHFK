@@ -1,17 +1,13 @@
 <?hh
-
 require_once "../vendor/autoload.php";
 
+use HHFK\Route\Router;
+use HHFK\Route\Url;
 use HHFK\Kernel;
-use HHFK\Controller\Controller;
 
-##TODO put core.hh at the root of project and then pass dir to Kernel
 
-function __print():string {
-	$c = new Controller();
+		// $module = new Test\TestModule\TestModule();
+// Kernel/OrW-e class to load configuration for specified environment
+$kernel = new Kernel();
 
-	$k = new Kernel(dirname(__DIR__));
-	return $c->index("PROD ENVIRONEMENT");
-}
-
-echo __print();
+Router::resolve(new Url())->send();

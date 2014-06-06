@@ -3,12 +3,7 @@
 use HHFK\Route\Route;
 use HHFK\Route\Router;
 
-Router::provide("/", "HHFK\Controller\Controller")
-	  ->setName("test")
-	  ->setRequestType(Route::POST)
-	  ->setController("");
-
-// Router::provide("/profile", "HHFK\Controller\Controller")
-Router::provide("/profile", "Test\TestModule\Controller\TestController")
+Router::provide("/user{user_id}/profile", "Test\TestModule\Controller\TestController")
 	  ->setName("profil")
+	  ->addData("test", "Ta mère plumette")
 	  ->setRequestType(Route::GET);
