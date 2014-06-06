@@ -51,7 +51,7 @@ class Route
 	protected function checkIsValidController()
 	{
 		if (!class_exists($this->_controller)) {
-			throw new HHFKException($_controller . ": Is not a valid class");
+			throw new HHFKException($this->_controller . ": Is not a valid class");
 		}
 	}
 	public function setController(string $controller): this

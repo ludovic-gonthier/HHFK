@@ -38,14 +38,11 @@ abstract class AModule
 			//PSR-4 Naming
 			$controller = $this->getNamespace() . "\\" . self::DEFAULT_CONTROLLER_FOLDER . "\\" . basename($controller, ".hh");
 			// Class added bu the PSR-4 Module autoloader
-			if (class_exists($controller) === false){
+			if (class_exists($controller) === false ||
+				is_subclass_of($controller, "HHFK\Controller\AController") === false){
 				continue;
 			}
-			$controller = new $controller;
-			// Is an instance of controller
-			if ($controller instanceof AController){
-				$controller->registerModule($this);
-			}
+			$controller::registerModule($this);
 		}
 	}
 

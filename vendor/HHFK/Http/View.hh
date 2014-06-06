@@ -3,20 +3,20 @@ namespace HHFK\Http;
 
 class View
 {
-	const FILE_EXTENSION = ".hh"
+	const FILE_EXTENSION = ".html";
 
-	public function build($modulePath, $viewFilename)
+	public function build($file, $data)
 	{
 		extract($data);
 		ob_start();
 		include($file . self::FILE_EXTENSION);
 		$tampon = ob_get_contents();
         ob_end_clean();
-		return ($tampon);
+        $this->_html = $tampon;
 	}
 	public function display()
 	{
-		echo $_html;
+		echo $this->_html;
 	}
 
 	private string $_html;

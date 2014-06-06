@@ -7,3 +7,13 @@ Router::provide("/user{user_id}/profile", "Test\TestModule\Controller\TestContro
 	  ->setName("profil")
 	  ->addData("test", "Ta mère plumette")
 	  ->setRequestType(Route::GET);
+
+Router::provide("/user{user_id}/profile", "Test\HomeModule\Controller\TestController")
+	  ->setName("profil")
+	  ->addData("test", "Ta mère plumette")
+	  ->setRequestType(Route::GET);
+	  
+Router::provide("/user{user_id}/profile", "Test\TestModule\Controller\TestController")
+	  ->setName("profil")
+	  ->addData("test", "Ta mère plumette")
+	  ->setRequestType(Route::GET);

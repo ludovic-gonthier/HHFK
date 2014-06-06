@@ -13,9 +13,16 @@ use HHFK\Exception\HHFKException;
 
 abstract class AController{
 	public function __construct(
-		private Request $request = null,
-		private Response $response = null)
+		protected Request $_request = null,
+		protected Response $_response = null)
 	{
+		var_dump("Constructed : " . static::class);
+		if ($this->_request === null) {
+			$this->_request = new Request;
+		}
+		if ($this->_response === null) {
+			$this->_response = new Response;
+		}
 	}
 
 	abstract public function index(): Response;
@@ -34,14 +41,14 @@ abstract class AController{
 		if (!class_exists($module)) {
 			throw new HHFKException($module . ": Is not a valid Module Class");
 		}
-		if (($module = Kernel::getModule($module)) === null) {
+		$module = Kernel::getModule($module);
+		if ($module === null) {
 			throw new HHFKException($module . ": The module as not been load, please see to add him to the Kernel");	
 		}
-		var_dump($module);die;
 		return $this->_response->render($template, $module);
 	}
 
-	public function registerModule(AModule $module): void
+	public static function registerModule(AModule $module): void
 	{
 		self::$_module = $module;
 	}

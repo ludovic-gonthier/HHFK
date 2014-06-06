@@ -34,9 +34,7 @@ class Kernel
 	}
 	public static function getModule(string $moduleName)
 	{
-		var_dump("Searching for module '" . $moduleName . "'");
 		foreach (self::$_modules as $module) {
-			var_dump("Name :" . $module->getName());
 			if ($module->getName() === $moduleName){
 				return $module;
 			}

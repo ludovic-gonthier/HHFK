@@ -8,6 +8,6 @@ class TestController extends AController
 {
 	public function index(): Response
 	{
-		return $this->renderFromModule("Test\HomeModule\HomeModule", "index");
+		return $this->render("index");
 	}
 }
