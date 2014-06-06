@@ -1,5 +1,5 @@
 <?hh
-namespace Test\TestModule\Controller;
+namespace Test\HomeModule\Controller;
 
 use HHFK\Controller\AController;
 use HHFK\Http\Response;
@@ -8,6 +8,5 @@ class TestController extends AController
 {
 	public function index(): Response
 	{
-		return $this->renderFromModule("Test\HomeModule\HomeModule", "index");
 	}
 }
