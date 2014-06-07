@@ -1,7 +1,7 @@
 <?hh
 namespace HHFK\Route;
 
-use HHFK\Exception\HHFKException;
+use HHFK\Exception\NotFoundException;
 use HHFK\Http\Response;
 
 use Monolog\Logger;
@@ -56,7 +56,7 @@ class Router{
         // route with 
         // foreach ()
 
-        throw new NotFoudException("No route match the pattern '" . $url->getPath() . "'");
+        throw new NotFoundException("No route match the pattern '" . $url->getPath() . "'");
     }
 
     public static function getInstance()

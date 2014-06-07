@@ -16,7 +16,7 @@ class Kernel
 	{
 		// Importing routes configuration
 		require_once "../conf/routes.hh";
-
+		require_once "../conf/services.hh";
 	}
 
 	##TODO use this function in the Controller, instead of recreating an instance
