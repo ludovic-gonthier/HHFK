@@ -23,31 +23,31 @@ abstract class AModule
 		$this->_logger = new Logger(static::class);
 		$this->_logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
 
+		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
+		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
 		$this->loadConfigurations();
 		$this->registerControllers();
+
 	}
 
 	protected function loadConfigurations(): void
 	{
 		// Load the Module's route configuration if any
-		$routesConfigurationPath = implode(
-			DIRECTORY_SEPARATOR,
-			array($this->getPath(),
-				  self::DEFAULT_CONFIGURATION_FOLDER,
-				  "routes.hh"
-			)
-		);
-		if (file_exists($routesConfigurationPath)){
-			require_once $routesConfigurationPath;
+		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.hh";
+		if (file_exists($routesConfig)){
+			require_once $routesConfig;
 		}
-
+		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.hh";
+		if (file_exists($servicesConfig)){
+			require_once $servicesConfig;
+		}
 	}
 
 	protected function registerControllers(): void
 	{
-		$files = \scandir($dirname = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER);
+		$files = \scandir($this->_controllerPath);
 		if ($files === false){
-			throw new BadDirectoryException($dirname . ": Is not a valid directory");
+			throw new BadDirectoryException($this->_controllerPath . ": Is not a valid directory");
 		}
 		foreach (array_diff($files, array(".", "..")) as $controller){
 			//PSR-4 Naming
@@ -96,6 +96,9 @@ abstract class AModule
 	protected string $_path;
 	protected string $_namespace;
 	protected string $_name;
+
+	protected string $_controllerPath;
+	protected string $_configurationPath;
 
 	protected Vector<AController> $_controllers;
 }
