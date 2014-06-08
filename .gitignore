@@ -1,0 +1,5 @@
+composer.lock
+sftp-config.json
+!vendor
+vendor/*
+!vendor/HHFK
