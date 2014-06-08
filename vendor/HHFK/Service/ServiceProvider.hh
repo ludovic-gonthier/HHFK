@@ -1,7 +1,7 @@
 <?hh
-namespace HHFK;
+namespace HHFK\Service;
 
-use HHFK\Service;
+use HHFK\Service\Service;
 use HHFK\Exception\HHFKException;
 
 class ServiceProvider
