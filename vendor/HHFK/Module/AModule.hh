@@ -29,6 +29,17 @@ abstract class AModule
 
 	protected function loadConfigurations(): void
 	{
+		// Load the Module's route configuration if any
+		$routesConfigurationPath = implode(
+			DIRECTORY_SEPARATOR,
+			array($this->getPath(),
+				  self::DEFAULT_CONFIGURATION_FOLDER,
+				  "routes.hh"
+			)
+		);
+		if (file_exists($routesConfigurationPath)){
+			require_once $routesConfigurationPath;
+		}
 
 	}
 
