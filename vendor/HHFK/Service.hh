@@ -11,7 +11,7 @@ class Service
 
 	}
 
-	public function service(): mixed
+	public function get(): mixed
 	{
 		// Instanciate only when service required
 		if (!isset($this->_instance)) {
