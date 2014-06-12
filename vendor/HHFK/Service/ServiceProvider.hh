@@ -19,6 +19,10 @@ class ServiceProvider
 	{
 		return $this->_services;
 	}
+	public function serviceExists(string $serviceName): bool
+	{
+		return $this->_services->contains($serviceName);
+	}
 	public function get(string $serviceName): mixed
 	{
 		$service = $this->_services->get($serviceName);

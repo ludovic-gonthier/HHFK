@@ -2,6 +2,7 @@
 namespace HHFK;
 
 use HHFK\Module\AModule;
+use HHFK\Service\ServiceProvider;
 
 class Kernel
 {
@@ -10,6 +11,8 @@ class Kernel
 	{
 		$this->configure();
 		$this->init();
+
+		ServiceProvider::getInstance()->get("test.test_service");
 	}
 
 	protected function configure():void
