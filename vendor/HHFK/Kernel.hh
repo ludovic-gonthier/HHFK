@@ -22,7 +22,6 @@ class Kernel
 		require_once "../conf/services.hh";
 	}
 
-	##TODO use this function in the Controller, instead of recreating an instance
 	protected function init():void
 	{
 		self::$_modules = Vector<AModule>{
