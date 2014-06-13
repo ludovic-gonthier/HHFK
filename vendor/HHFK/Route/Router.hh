@@ -11,6 +11,10 @@ use Monolog\Handler\StreamHandler;
 ##TODO class as Service
 ## Configuration with arrays
 class Router{
+    const string OPEN_BRACKET = "{";
+    const string CLOSE_BRACKET = "}";
+    const string REGEXP_SUBSTITUTION = "([a-z0-9+_-]*)";
+
     protected function __construct()
     {
         $this->_routes = new Map<string, Route>;
@@ -49,30 +53,34 @@ class Router{
         }
         return $return;
     }
+
     private function fetchRoute(Url $url): Route
     {
         $route = $this->_routes->get($url->getPath());
         // route directly found
         if ($route !== null)
             return $route;
-        ## TODO : search for route with '{foo}'
+        ## TODO : Test for route with multiples {}
         foreach ($this->_routes as $pattern => $route){
-            $openBracket = strpos("{", $pattern);
-            $regexp = $pattern;
+            $openBracket = strpos($pattern, self::OPEN_BRACKET);
+            $variable = null;
             while ($openBracket !== false){
-                $closeBracket = strpos("}", $pattern);
+                $closeBracket = strpos($pattern, self::CLOSE_BRACKET);
                 if ($closeBracket === false) {
                     ## TODO correct  Exception
                     throw new \Exception("Could not find closing bracket for the pattern: '" . $pattern . "'");
                 }
                 $tmpPattern = substr($pattern, 0, $openBracket);
-                $variable = substr($pattern, $openBracket ,  $closeBracket - $openBracket);
-                $pattern = $tmpPattern . substr($pattern, $closeBracket);
-                var_dump($"VARIABLE => " . $variable, "PATTERN => " . $pattern);
-                $openBracket = strpos("{", $pattern);
+                $variable = substr($pattern, $openBracket + 1,  $closeBracket - $openBracket - 1);
+                $pattern = $tmpPattern . self::REGEXP_SUBSTITUTION . substr($pattern, $closeBracket + 1);
+                $openBracket = strpos(self::OPEN_BRACKET, $pattern);
+            }
+            $regexp = "/^" . str_replace('/', "\/", $pattern) . "$/";
+            if (preg_match($regexp, $url->getPath(), $match)) {$
+                $route->addData($variable, $match[1]);
+                return $route;
             }
         }
-
         throw new NotFoundException("No route match the pattern '" . $url->getPath() . "'");
     }
 
