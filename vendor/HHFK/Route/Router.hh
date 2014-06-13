@@ -56,8 +56,22 @@ class Router{
         if ($route !== null)
             return $route;
         ## TODO : search for route with '{foo}'
-        // route with 
-        // foreach ()
+        foreach ($this->_routes as $pattern => $route){
+            $openBracket = strpos("{", $pattern);
+            $regexp = $pattern;
+            while ($openBracket !== false){
+                $closeBracket = strpos("}", $pattern);
+                if ($closeBracket === false) {
+                    ## TODO correct  Exception
+                    throw new \Exception("Could not find closing bracket for the pattern: '" . $pattern . "'");
+                }
+                $tmpPattern = substr($pattern, 0, $openBracket);
+                $variable = substr($pattern, $openBracket ,  $closeBracket - $openBracket);
+                $pattern = $tmpPattern . substr($pattern, $closeBracket);
+                var_dump($"VARIABLE => " . $variable, "PATTERN => " . $pattern);
+                $openBracket = strpos("{", $pattern);
+            }
+        }
 
         throw new NotFoundException("No route match the pattern '" . $url->getPath() . "'");
     }
