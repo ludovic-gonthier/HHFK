@@ -15,18 +15,17 @@ class Service
 		// Instanciate only when service required
 		if (!isset($this->_instance)) {
 			//Instanciate all the class passed as parameter
+			##TODO Take care of recursive inclusion
 			foreach ($this->_parameters as $name => $parameter){
 				// If a parameter is a registered class
 				if (class_exists($parameter) === false) {
 					continue;
 				}
+				
 				$provider = ServiceProvider::getInstance();
 				if ($provider->serviceExists($parameter)) {// instance of Service
 					$this->_parameters[$name] = $povider->get($parameter);
-				} else { // Normal instanciation of class
-					$this->_parameters[$name] = new $parameter();
 				}
-
 			}
 			$reflect = new \Reflectionclass($this->_class);
 			$this->_instance = $reflect->newInstanceArgs($this->_parameters);

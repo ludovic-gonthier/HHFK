@@ -7,6 +7,9 @@ use HHFK\Http\Response;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+
+##TODO class as Service
+## Configuration with arrays
 class Router{
     protected function __construct()
     {

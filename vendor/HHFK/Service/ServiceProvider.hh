@@ -4,6 +4,8 @@ namespace HHFK\Service;
 use HHFK\Service\Service;
 use HHFK\Exception\HHFKException;
 
+
+##TODO pass service provider to Controller as attributes $_services;
 class ServiceProvider
 {
 	protected function __construct()
