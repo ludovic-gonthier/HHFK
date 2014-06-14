@@ -38,20 +38,21 @@ class Router{
     {
         $route = $this->fetchRoute($url);
         $controller = new ($route->getController());
-        // Attach route and url to request
+        ##TODO Attach route and url to request
+        ##TODO Check if authorised request
 
         ##TODO : ServiceProvider => store logger
         $logger = new Logger(static::class);
         $logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
         $logger->addInfo($class . "->" . $route->getAction());
 
-        $return = call_user_func_array(array($controller, $route->getAction()),
-                                       $route->getDatas()->toArray());
-        if ($return === false){
-            ##TODO : Handle error
+        $handler = array($controller, $route->getAction());
+        if (is_callable($handler) === false) {
+            ##TODO Correct Exception
             $logger->addInfo($class . "->" . $route->getAction() . " FAILED");
+            throw new Exception("Call to an undefined method '" . $route->getAction() . "' in the controller '" . $controller . "'");
         }
-        return $return;
+        return call_user_func_array($handler, $route->getDatas()->toArray());
     }
 
     private function replaceVariableInPattern(string &$pattern)
