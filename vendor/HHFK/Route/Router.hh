@@ -9,11 +9,11 @@ use Monolog\Handler\StreamHandler;
 
 
 ##TODO class as Service
-## Configuration with arrays
+## Configuration with INI Files
 class Router{
     const string OPEN_BRACKET = "{";
     const string CLOSE_BRACKET = "}";
-    const string REGEXP_SUBSTITUTION = "([a-z0-9+_-]*)";
+    const string REGEXP = "[A-Za-z0-9+_-]*";
 
     protected function __construct()
     {
@@ -54,30 +54,39 @@ class Router{
         return $return;
     }
 
+    private function replaceVariableInPattern(string &$pattern)
+    {
+        $openBracket = strpos($pattern, self::OPEN_BRACKET);
+        while ($openBracket !== false) {
+            $closeBracket = strpos($pattern, self::CLOSE_BRACKET);
+            if ($closeBracket === false) {
+                ## TODO correct  Exception
+                throw new \Exception("Could not find closing bracket for the pattern: '" . $pattern . "'");
+            }
+            $regexp = "(?<" . substr($pattern, $openBracket + 1,  $closeBracket - $openBracket - 1) . ">" . self::REGEXP . ")";
+            $pattern = substr($pattern, 0, $openBracket) . $regexp . substr($pattern, $closeBracket + 1);
+
+            $openBracket = strpos($pattern, self::OPEN_BRACKET);
+        }
+    }
+
     private function fetchRoute(Url $url): Route
     {
         $route = $this->_routes->get($url->getPath());
-        // route directly found
-        if ($route !== null)
+        if ($route !== null) {
             return $route;
-        ## TODO : Test for route with multiples {}
-        foreach ($this->_routes as $pattern => $route){
-            $openBracket = strpos($pattern, self::OPEN_BRACKET);
-            $variable = null;
-            while ($openBracket !== false){
-                $closeBracket = strpos($pattern, self::CLOSE_BRACKET);
-                if ($closeBracket === false) {
-                    ## TODO correct  Exception
-                    throw new \Exception("Could not find closing bracket for the pattern: '" . $pattern . "'");
-                }
-                $tmpPattern = substr($pattern, 0, $openBracket);
-                $variable = substr($pattern, $openBracket + 1,  $closeBracket - $openBracket - 1);
-                $pattern = $tmpPattern . self::REGEXP_SUBSTITUTION . substr($pattern, $closeBracket + 1);
-                $openBracket = strpos(self::OPEN_BRACKET, $pattern);
-            }
+        }
+
+        foreach ($this->_routes as $pattern => $route) {
+            $this->replaceVariableInPattern($pattern);
             $regexp = "/^" . str_replace('/', "\/", $pattern) . "$/";
-            if (preg_match($regexp, $url->getPath(), $match)) {$
-                $route->addData($variable, $match[1]);
+            if (preg_match($regexp, $url->getPath(), $match)) {
+                foreach ($match as $key => $value) {
+                    if (is_int($key)) {
+                        continue;
+                    }
+                    $route->addData($key, $value);
+                }
                 return $route;
             }
         }

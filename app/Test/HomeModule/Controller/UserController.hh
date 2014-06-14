@@ -11,4 +11,9 @@ class UserController extends AController
 		var_dump($user_id);
 		return $this->render("index", array("user_id" => $user_id));
 	}
+	public function birthdate($user_id, $foo): Response
+	{
+		var_dump($user_id, $foo);
+		return $this->render("index", array("user_id" => $user_id));
+	}
 }
