@@ -15,7 +15,7 @@ class Router{
     const string CLOSE_BRACKET = "}";
     const string REGEXP = "[A-Za-z0-9+_-]*";
 
-    protected function __construct()
+    public function __construct()
     {
         $this->_routes = new Map<string, Route>;
     }
@@ -122,15 +122,6 @@ class Router{
         }
         throw new NotFoundException("No route match the pattern '" . $url->getPath() . "'");
     }
-
-    public static function getInstance()
-    {
-        if (!isset(static::$_instance)){
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
-    protected static Router $_instance = null;
     
     private Map<string, Route> $_routes;
 }

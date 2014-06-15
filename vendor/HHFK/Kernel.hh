@@ -2,8 +2,8 @@
 namespace HHFK;
 
 use HHFK\Module\AModule;
-use HHFK\Route\Router;
 use HHFK\Service\ServiceProvider;
+use HHFK\Service\Service;
 use HHFK\Parser\IniFileParser;
 
 class Kernel
@@ -23,10 +23,14 @@ class Kernel
 		// require_once "../conf/routes.hh";
 		require_once "../conf/services.hh";
 
+		// Providing the router as a service
+		$provider = ServiceProvider::getInstance();
+		$provider->register(new Service("router", "HHFK\Route\Router"));
+		// Importing routes configuration
 		$parser = new IniFileParser();
 		$routes = $parser->parseFile("../conf/routes.ini");
-		Router::getInstance()->prepare($routes);
-		echo "<pre>", var_dump(Router::getInstance()->provided()), "</pre>";
+		$provider->get("router")->prepare($routes);
+		echo "<pre>", var_dump($provider->get("router")->provided()), "</pre>";
 	}
 
 	protected function init():void

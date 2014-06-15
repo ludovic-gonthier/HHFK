@@ -2,6 +2,8 @@
 namespace HHFK\Module;
 
 use HHFK\Controller\AController;
+use HHFK\Parser\IniFileParser;
+use HHFK\Service\ServiceProvider;
 
 use HHFK\Exception\BadDirectoryException;
 
@@ -33,9 +35,11 @@ abstract class AModule
 	protected function loadConfigurations(): void
 	{
 		// Load the Module's route configuration if any
-		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.hh";
-		if (file_exists($routesConfig)){
-			require_once $routesConfig;
+		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
+		if (file_exists($routesConfig)) {
+			$parser = new IniFileParser();
+			$routes = $parser->parseFile($routesConfig);
+			ServiceProvider::getInstance()->get("router")->prepare($routes);
 		}
 		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.hh";
 		if (file_exists($servicesConfig)){
