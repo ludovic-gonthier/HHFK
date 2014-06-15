@@ -50,9 +50,8 @@ class ServiceProvider
 	public function get(string $serviceName): mixed
 	{
 		$service = $this->_services->get($serviceName);
-		if ($service === null){
-			## TODO Correct Exception tree
-			throw new HHFKException("The service '" . $serviceName . "' requested is not registered");
+		if ($service === null) {
+			throw new NotRegisteredException("Service '" . $serviceName . "' requested is not registered");
 		}
 		return $service->get();
 	}
@@ -63,7 +62,7 @@ class ServiceProvider
 	 */
 	public static function getInstance(): this
 	{
-		if (!isset(self::$_instance)){
+		if (!isset(self::$_instance)) {
 			self::$_instance = new self;
 		}
 		return self::$_instance;

@@ -1,5 +1,6 @@
 <?hh //strict
 namespace HHFK\Parser;
+namespace HHFK\Exception\FileFormatException;
 
 class IniFileParser
 {
@@ -12,13 +13,13 @@ class IniFileParser
 	 * 
 	 * @param  string $filename
 	 * @return The array containing the configuration lodaded from the file
+	 * @throws FileFormatException If parse_ini_file fails
 	 */
 	public function parseFile(string $filename): array
 	{
 		$ini = \parse_ini_file($filename, true);
 		if ($ini === false){
-			## TODO Correct Exception
-			throw new \Exception("INI file not correctly formatted");
+			throw new FileFormatException("INI file: '" . $filename . "'. Not correctly formatted INI file");
 		}
 
 		$configuration = array();

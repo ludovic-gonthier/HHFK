@@ -1,7 +1,10 @@
 <?hh
 namespace HHFK\Route;
 
-use HHFK\Exception\NotFoundException;
+use HHFK\Exception\Http\NotFoundException;
+use HHFK\Exception\Class\MethodNotFoundException;
+use HHFK\Exception\Route\BadConfigurationException;
+
 use HHFK\Http\Response;
 
 use Monolog\Logger;
@@ -29,11 +32,11 @@ class Router{
         foreach ($configuration as $name => $parameters) {
             if (!array_key_exists("pattern", $parameters)) {
                 ## TODO Correct Exception
-                throw new \Exception("Route not correctly formatted: no pattern set");
+                throw new BadConfigurationException("Route not correctly formatted: no pattern set.");
             }
             if (!array_key_exists("controller", $parameters)) {
                 ## TODO Correct Exception
-                throw new \Exception("Route not correctly formatted: no controller provided");
+                throw new BadConfigurationException("Route not correctly formatted: no controller provided.");
             }
             $route = new Route($parameters["pattern"], $parameters["controller"]);
             $route->setName($name);
@@ -87,9 +90,8 @@ class Router{
 
         $handler = array($controller, $route->getAction());
         if (is_callable($handler) === false) {
-            ## TODO Correct Exception
             $logger->addInfo($class . "->" . $route->getAction() . " FAILED");
-            throw new \Exception("Call to an undefined method '" . $route->getAction() . "' in the controller '" . $controller . "'");
+            throw new MethodNotFoundException("Call to an undefined method '" . $route->getAction() . "' in the class '" . $controller . "'");
         }
         return call_user_func_array($handler, $route->getDatas()->toArray());
     }
@@ -104,12 +106,12 @@ class Router{
      */
     private function replaceVariableInPattern(string &$pattern): void
     {
+        $initialPattern = $pattern; // For correct pattern in exception
         $openBracket = strpos($pattern, self::OPEN_BRACKET);
         while ($openBracket !== false) {
             $closeBracket = strpos($pattern, self::CLOSE_BRACKET);
             if ($closeBracket === false) {
-                ## TODO correct  Exception
-                throw new \Exception("Could not find closing bracket for the pattern: '" . $pattern . "'");
+                throw new BadPatternFormatException("Bad pattern format: mismatched closing bracket in the pattern: '" . $initialPattern . "'");
             }
             $regexp = "(?<" . substr($pattern, $openBracket + 1,  $closeBracket - $openBracket - 1) . ">" . self::REGEXP . ")";
             $pattern = substr($pattern, 0, $openBracket) . $regexp . substr($pattern, $closeBracket + 1);

@@ -67,7 +67,7 @@ abstract class AModule
 	{
 		$files = \scandir($this->_controllerPath);
 		if ($files === false){
-			throw new BadDirectoryException($this->_controllerPath . ": Is not a valid directory");
+			throw new BadDirectoryException($this->_controllerPath . ": not a valid directory");
 		}
 		foreach (array_diff($files, array(".", "..")) as $controller){
 			//PSR-4 Naming

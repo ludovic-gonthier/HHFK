@@ -2,7 +2,10 @@
 namespace HHFK\Route;
 
 use HHFK\Controller\Controller;
+
 use HHFK\Exception\HHFKException;
+use HHFK\Exception\Class\ClassNotFoundException;
+use HHFK\Exception\Class\MethodNotFoundException;
 
 class Route
 {
@@ -77,8 +80,7 @@ class Route
 	protected function checkIsValidController():void
 	{
 		if (!class_exists($this->_controller)) {
-			## TODO Correct Exception tree
-			throw new HHFKException($this->_controller . ": Is not a valid class");
+			throw new ClassNotFoundException($this->_controller . ": Class not found.");
 		}
 	}
 	/**
@@ -111,9 +113,8 @@ class Route
 	 */
 	public function setAction(string $action): this
 	{
-		if (!method_exists($this->_controller, $action)){
-			## TODO Correct Exception tree
-			throw new HHFKException($action . ": Is not a method of the class " . $this->_controller);
+		if (!method_exists($this->_controller, $action)) {
+			throw new MethodNotFoundException($this->_controller . "::" . $action . "(): Not a method of the class.");
 		}
 		$this->_action = $action;
 		return $this;

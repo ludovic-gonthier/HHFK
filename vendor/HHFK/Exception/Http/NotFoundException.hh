@@ -1,5 +1,7 @@
 <?hh
-namespace HHFK\Exception;
+namespace HHFK\Exception\Http;
+
+use HHFK\Exception\HHFKException;
 
 class NotFoundException extends HHFKException
 {

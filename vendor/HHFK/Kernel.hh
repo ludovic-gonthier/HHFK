@@ -22,6 +22,7 @@ class Kernel
 	 */
 	protected function configure():void
 	{
+		## TODO load the correct loacle from the configuration file
 		\date_default_timezone_set("Europe/Paris");
 		## TODO ParseIniFile for service configuration
 		require_once "../conf/services.hh";
