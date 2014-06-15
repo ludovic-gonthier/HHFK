@@ -19,8 +19,8 @@ class Kernel
 
 	protected function configure():void
 	{
-		// Importing routes configuration
-		// require_once "../conf/routes.hh";
+		\date_default_timezone_set("Europe/Paris");
+
 		require_once "../conf/services.hh";
 
 		// Providing the router as a service
