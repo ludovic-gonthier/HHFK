@@ -20,6 +20,35 @@ class Router{
         $this->_routes = new Map<string, Route>;
     }
 
+    public function prepare(array $configuration)
+    {
+        foreach ($configuration as $name => $parameters) {
+            if (!array_key_exists("pattern", $parameters)) {
+                ## TODO Correct Exception
+                throw new \Exception("Route not correctly formatted: no pattern set");
+            }
+            if (!array_key_exists("controller", $parameters)) {
+                ## TODO Correct Exception
+                throw new \Exception("Route not correctly formatted: no controller provided");
+            }
+            $route = new Route($parameters["pattern"], $parameters["controller"]);
+            $route->setName($name);
+            if (array_key_exists("action", $parameters)) {
+                $route->setAction($parameters["action"]);
+            }
+            if (array_key_exists("options", $parameters) && array_key_exists("method", $parameters["options"])) {
+                ##TODO Set multiple authorised request for a route
+                $route->setRequestType($parameters["options"]["method"]);
+            }
+            if (array_key_exists("datas", $parameters)) {
+                foreach ($parameters["datas"] as $key => $value) {
+                    $route->addData($key, $value);
+                }
+            }
+            $this->_routes[$route->getPattern()] = $route;
+        }
+    }
+
     public function provide(string $pattern, string $controller): Route
     {
         $route = new Route($pattern, $controller);
@@ -29,7 +58,7 @@ class Router{
         return $route;
     }
 
-    public function provided(): Vector<Route>
+    public function provided(): Map<string, Route>
     {
         return $this->_routes;
     }
