@@ -9,10 +9,24 @@ class Response
 	{
 		header("HTTP/1.1 200 OK");
 	}
+	/**
+	 * Send the response
+	 * -> Setting the correct HTTP header
+	 * -> Displaying the template
+	 */
 	public function send(): void
 	{
 		$this->_view->display();
 	}
+	/**
+	 * Render the template file of the response
+	 * 
+	 * @param  string  $template
+	 * @param  AModule $module
+	 * @param  array   $data
+	 * 
+	 * @return Response
+	 */
 	public function render(string $template, AModule $module, mixed $data = array()): this
 	{
 		$this->_view = new View();

@@ -13,18 +13,40 @@ class ServiceProvider
 		$this->_services = new Map<string, Service>;
 	}
 
-	public function register(Service $service)
+	/**
+	 * Register a service in the provider
+	 * 
+	 * @param  Service $service
+	 */
+	public function register(Service $service):void
 	{
 		$this->_services[$service->getName()] = $service;
 	}
-	public function registered()
+	/**
+	 * Return the registered service in the provider
+	 * @return ImmMap<string, Service>
+	 */
+	public function registered():ImmMap<string, Service>
 	{
-		return $this->_services;
+		return $this->_services->toImmMap();
 	}
+	/**
+	 * Check if a service exists
+	 * 
+	 * @param  string $serviceName
+	 * @return bool
+	 */
 	public function serviceExists(string $serviceName): bool
 	{
 		return $this->_services->contains($serviceName);
 	}
+	/**
+	 * Fetch a registered service
+	 * 
+	 * @param  string $serviceName
+	 * @return mixed Instance of the service
+	 * @throws HHFKException If the service is not registered
+	 */
 	public function get(string $serviceName): mixed
 	{
 		$service = $this->_services->get($serviceName);
@@ -35,6 +57,10 @@ class ServiceProvider
 		return $service->get();
 	}
 
+	/**
+	 * Return an instance of the ServiceProvider
+	 * @return ServiceProvider
+	 */
 	public static function getInstance(): this
 	{
 		if (!isset(self::$_instance)){

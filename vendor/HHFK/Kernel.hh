@@ -48,7 +48,11 @@ class Kernel
 		};
 	}
 
-	protected function boot()
+	/**
+	 * Boot the module registered in the Kernel
+	 * 
+	 */
+	protected function boot(): void
 	{
 		foreach (self::$_modules as $module) {
 			$module->boot($this->_provider);

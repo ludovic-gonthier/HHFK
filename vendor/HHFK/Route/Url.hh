@@ -33,7 +33,10 @@ class Url{
 		$this->_query    = isset($parsed[self::URL_QUERY]) ? '?' . $parsed[self::URL_QUERY] : '';
 		$this->_fragment = isset($parsed[self::URL_FRAGMENT]) ? '#' . $parsed[self::URL_FRAGMENT] : '';
 	}
-
+	/**
+	 * print the URL
+	 * @return string
+	 */
 	public function __toString()
 	{
 		$pass = ($this->_user || $this->_pass) ? $this->_pass . "@" : '';
@@ -43,34 +46,66 @@ class Url{
 			$port, $this->_path, $this->_query, $this->_fragment);
 	}
 
+	/**
+	 * Return the scheme of the URL
+	 * @return string
+	 */
 	public function getScheme(): string
 	{
 		return $this->_scheme;
 	}
+	/**
+	 * Return the port of the URL
+	 * @return int
+	 */
 	public function getPort(): int
 	{
 		return $this->_port;
 	}
+	/**
+	 * Return the host of the URL
+	 * @return string
+	 */
 	public function getHost(): string
 	{
 		return $this->_host;
 	}
+	/**
+	 * Return the user of the URL
+	 * @return string
+	 */
 	public function getUser(): string
 	{
 		return $this->_user;
 	}
+	/**
+	 * Return the pass of the URL
+	 * @return string
+	 */
 	public function getPass(): string
 	{
 		return $this->_pass;
 	}
+	/**
+	 * Return the query of the URL
+	 * @return string
+	 */
 	public function getQuery(): string
 	{
 		return $this->_query;
 	}
+	/**
+	 * Return the path of the URL
+	 * @return string
+	 */
 	public function getPath(): string
 	{
 		return $this->_path;
 	}
+	/**
+	 * Return the fragment of the URL
+	 * @return string
+	 */
 	public function getFragment(): string
 	{
 		return $this->_fragment;

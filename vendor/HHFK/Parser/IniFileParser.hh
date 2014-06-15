@@ -3,7 +3,17 @@ namespace HHFK\Parser;
 
 class IniFileParser
 {
-	public function parseFile(string $filename)
+	/**
+	 * Parse an INI file, creating subsection
+	 * e.g
+	 * [section] 
+	 * [section:sub-section]
+	 *    data=value
+	 * 
+	 * @param  string $filename
+	 * @return The array containing the configuration lodaded from the file
+	 */
+	public function parseFile(string $filename): array
 	{
 		$ini = \parse_ini_file($filename, true);
 		if ($ini === false){
