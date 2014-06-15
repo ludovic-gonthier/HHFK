@@ -1,8 +1,9 @@
-<?hh
+<?hh //strict
 namespace HHFK;
 
 use HHFK\Module\AModule;
 use HHFK\Service\ServiceProvider;
+use HHFK\Parser\IniFileParser;
 
 class Kernel
 {
@@ -20,6 +21,10 @@ class Kernel
 		// Importing routes configuration
 		require_once "../conf/routes.hh";
 		require_once "../conf/services.hh";
+
+		$parser = new IniFileParser();
+		$routes = $parser->parseFile("../conf/routes.ini");
+		echo "<pre>", var_dump($routes), "</pre>";
 	}
 
 	protected function init():void
