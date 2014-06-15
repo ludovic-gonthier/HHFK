@@ -23,9 +23,6 @@ class Kernel
 
 		require_once "../conf/services.hh";
 
-		// Providing the router as a service
-		$provider = ServiceProvider::getInstance();
-		$provider->register(new Service("router", "HHFK\Route\Router"));
 		// Importing routes configuration
 		$parser = new IniFileParser();
 		$routes = $parser->parseFile("../conf/routes.ini");
@@ -39,6 +36,9 @@ class Kernel
 			new \Test\TestModule\TestModule,
 			new \Test\HomeModule\HomeModule
 		};
+		// Providing the router as a service
+		$provider = ServiceProvider::getInstance();
+		$provider->register(new Service("router", "HHFK\Route\Router"));
 	}
 
 	public static function loadedModule()
