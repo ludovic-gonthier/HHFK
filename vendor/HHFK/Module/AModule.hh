@@ -32,7 +32,12 @@ abstract class AModule
 
 	}
 
-	protected function loadConfigurations(): void
+	/**
+	 * Load the different configuration of the module
+	 * Must be put in the "Configuration" folder of the module
+	 * @param  ServiceProvider $provider
+	 */
+	protected function loadConfigurations(ServiceProvider $provider): void
 	{
 		// Load the Module's route configuration if any
 		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
@@ -47,6 +52,10 @@ abstract class AModule
 		}
 	}
 
+	/**
+	 * Register the controller of a module
+	 * @throws BadDirectoryException If the "Controller" directory not present
+	 */
 	protected function registerControllers(): void
 	{
 		$files = \scandir($this->_controllerPath);
@@ -66,11 +75,22 @@ abstract class AModule
 		}
 	}
 
+	/**
+	 * Check that a module has a given controller provided
+	 * 
+	 * @param  string  $controller The controller class name to be checked
+	 * @return boolean
+	 */
 	public function hasController(string $controller): bool
 	{
 		return $this->_controllers->linearSearch($controller) !== -1;
 	}
 
+	/**
+	 * Return the namespace of the module
+	 * 
+	 * @return string namespace name
+	 */
 	public function getNamespace(): string
 	{
 		if (!isset($this->_namespace)){
@@ -80,6 +100,10 @@ abstract class AModule
 		return $this->_namespace;
 	}
 
+	/**
+	 * Return the path of the module
+	 * @return string Path
+	 */
 	public function getPath(): string
 	{
 		if (!isset($this->_path)) {
@@ -89,6 +113,11 @@ abstract class AModule
 		return $this->_path;
 	}
 
+	/**
+	 * Return the name of the Module
+	 * 
+	 * @return string Name of the module
+	 */
 	public function getName(): string
 	{
 		if (!isset($this->_name)) {

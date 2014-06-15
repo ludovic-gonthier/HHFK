@@ -10,6 +10,12 @@ class Service
 	{
 	}
 
+	/**
+	 * Fetch a Service
+	 * Instantiate it if not already loaded
+	 * 
+	 * @return mixed The service class
+	 */
 	public function get(): mixed
 	{
 		// Instanciate only when service required
@@ -32,6 +38,10 @@ class Service
 		}
 		return $this->_instance;
 	}
+	/**
+	 * Return the name of the service
+	 * @return string
+	 */
 	public function getName(): string
 	{
 		return $this->_name;

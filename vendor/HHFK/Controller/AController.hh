@@ -33,15 +33,31 @@ abstract class AController{
 		}
 	}
 
-	protected function redirect($html): Response
+	##TODO pass the correct argument
+	protected function redirect(): Response
 	{
-		return new RedirectResponse($html);
+		return new RedirectResponse();
 	}
 
+	/**
+	 * Render a template in the current module
+	 * 
+	 * @param  string $template
+	 * @return Response
+	 */
 	protected function render(string $template): Response
 	{
 		return $this->_response->render($template, $this->getModule());
 	}
+	/**
+	 * [renderFromModule description]
+	 * @param  string $module
+	 * @param  string $template
+	 * @return Response
+	 *
+	 * @throws HHFKException If the given module is not a valid module
+	 * @throws HHFKException If the given module has not been initialized
+	 */
 	protected function renderFromModule(string $module, string $template): Response
 	{
 		if (!class_exists($module)) {
@@ -54,10 +70,20 @@ abstract class AController{
 		return $this->_response->render($template, $module);
 	}
 
+	/**
+	 * Bind a module to the controller
+	 * 
+	 * @param  AModule $module
+	 */
 	public function registerModule(AModule $module): void
 	{
 		$this->_module = $module;
 	}
+	/**
+	 * Return the module that is binded to the Controller
+	 * 
+	 * @return AModule
+	 */
 	public function getModule(): AModule
 	{
 		return $this->_module;

@@ -20,7 +20,14 @@ class Router{
         $this->_routes = new Map<string, Route>;
     }
 
-    public function prepare(array $configuration)
+    /**
+     * Provide the router with the route fetched from INI files
+     * 
+     * @param  array  $configuration Array returned from INI file parsing
+     * @throws Exception If no pattern given in the configuration array
+     * @throws Exception If no controller given in the configuration array
+     */
+    public function prepare(array $configuration): void
     {
         foreach ($configuration as $name => $parameters) {
             if (!array_key_exists("pattern", $parameters)) {
@@ -49,20 +56,26 @@ class Router{
         }
     }
 
-    public function provide(string $pattern, string $controller): Route
-    {
-        $route = new Route($pattern, $controller);
-        if (!isset($this->_routes)){
-        }
-        $this->_routes[$pattern] = $route;
-        return $route;
-    }
-
+    /**
+     * Return the known route by the router
+     * 
+     * @return Map<string, Route> The map containing the known route
+     */
     public function provided(): Map<string, Route>
     {
         return $this->_routes;
     }
 
+    /**
+     * Resolve a route
+     * Find the correct route corresponding to the URL
+     * Call the controller for the route action, with the route datas
+     * 
+     * @param  Url    $url Url to resolve
+     * 
+     * @return Response The response of the route call
+     * @throws Exception If trying to call an unknown controller's action
+     */
     public function resolve(Url $url): Response
     {
         $route = $this->fetchRoute($url);
@@ -79,12 +92,20 @@ class Router{
         if (is_callable($handler) === false) {
             ##TODO Correct Exception
             $logger->addInfo($class . "->" . $route->getAction() . " FAILED");
-            throw new Exception("Call to an undefined method '" . $route->getAction() . "' in the controller '" . $controller . "'");
+            throw new \Exception("Call to an undefined method '" . $route->getAction() . "' in the controller '" . $controller . "'");
         }
         return call_user_func_array($handler, $route->getDatas()->toArray());
     }
 
-    private function replaceVariableInPattern(string &$pattern)
+    /**
+     * Resolve route with variable parameter's in, and format 
+     * the pattern for regexp
+     * 
+     * @param  string $pattern Pattern of the URL
+     * e.g: /user/{user_id}/
+     * @throws Exception If Pattern not correctly formatted
+     */
+    private function replaceVariableInPattern(string &$pattern): void
     {
         $openBracket = strpos($pattern, self::OPEN_BRACKET);
         while ($openBracket !== false) {
@@ -100,6 +121,13 @@ class Router{
         }
     }
 
+    /**
+     * Find the correct route for the given URL
+     * 
+     * @param  Url    $url
+     * @return Route The found route
+     * @throws NotFoundException If no route found
+     */
     private function fetchRoute(Url $url): Route
     {
         $route = $this->_routes->get($url->getPath());
