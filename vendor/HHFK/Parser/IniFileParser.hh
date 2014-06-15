@@ -17,7 +17,7 @@ class IniFileParser
 	{
 		$ini = \parse_ini_file($filename, true);
 		if ($ini === false){
-			##TODO Correct Exception
+			## TODO Correct Exception
 			throw new \Exception("INI file not correctly formatted");
 		}
 

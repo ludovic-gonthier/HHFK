@@ -5,7 +5,7 @@ use HHFK\Service\Service;
 use HHFK\Exception\HHFKException;
 
 
-##TODO pass service provider to Controller as attributes $_services;
+## TODO pass service provider to Controller as attributes $_services;
 class ServiceProvider
 {
 	protected function __construct()
@@ -51,7 +51,7 @@ class ServiceProvider
 	{
 		$service = $this->_services->get($serviceName);
 		if ($service === null){
-			##TODO Correct Exception tree
+			## TODO Correct Exception tree
 			throw new HHFKException("The service '" . $serviceName . "' requested is not registered");
 		}
 		return $service->get();

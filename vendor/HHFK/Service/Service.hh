@@ -21,7 +21,7 @@ class Service
 		// Instanciate only when service required
 		if (!isset($this->_instance)) {
 			//Instanciate all the class passed as parameter
-			##TODO Take care of recursive inclusion
+			## TODO Take care of recursive inclusion
 			foreach ($this->_parameters as $name => $parameter){
 				// If a parameter is a registered class
 				if (class_exists($parameter) === false) {

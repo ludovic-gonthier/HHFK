@@ -7,9 +7,6 @@ use HHFK\Http\Response;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-
-##TODO class as Service
-## Configuration with INI Files
 class Router{
     const string OPEN_BRACKET = "{";
     const string CLOSE_BRACKET = "}";
@@ -44,7 +41,7 @@ class Router{
                 $route->setAction($parameters["action"]);
             }
             if (array_key_exists("options", $parameters) && array_key_exists("method", $parameters["options"])) {
-                ##TODO Set multiple authorised request for a route
+                ## TODO Set multiple authorised request for a route
                 $route->setRequestType($parameters["options"]["method"]);
             }
             if (array_key_exists("datas", $parameters)) {
@@ -80,17 +77,17 @@ class Router{
     {
         $route = $this->fetchRoute($url);
         $controller = new ($route->getController());
-        ##TODO Attach route and url to request
-        ##TODO Check if authorised request
+        ## TODO Attach route and url to request
+        ## TODO Check if authorised request
 
-        ##TODO : ServiceProvider => store logger
+        ## TODO : ServiceProvider => store logger
         $logger = new Logger(static::class);
         $logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
         $logger->addInfo($class . "->" . $route->getAction());
 
         $handler = array($controller, $route->getAction());
         if (is_callable($handler) === false) {
-            ##TODO Correct Exception
+            ## TODO Correct Exception
             $logger->addInfo($class . "->" . $route->getAction() . " FAILED");
             throw new \Exception("Call to an undefined method '" . $route->getAction() . "' in the controller '" . $controller . "'");
         }

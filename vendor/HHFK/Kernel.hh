@@ -23,7 +23,7 @@ class Kernel
 	protected function configure():void
 	{
 		\date_default_timezone_set("Europe/Paris");
-		##TODO ParseIniFile for service configuration
+		## TODO ParseIniFile for service configuration
 		require_once "../conf/services.hh";
 
 		// Importing routes configuration

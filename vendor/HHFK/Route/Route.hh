@@ -77,7 +77,7 @@ class Route
 	protected function checkIsValidController():void
 	{
 		if (!class_exists($this->_controller)) {
-			##TODO Correct Exception tree
+			## TODO Correct Exception tree
 			throw new HHFKException($this->_controller . ": Is not a valid class");
 		}
 	}
@@ -112,7 +112,7 @@ class Route
 	public function setAction(string $action): this
 	{
 		if (!method_exists($this->_controller, $action)){
-			##TODO Correct Exception tree
+			## TODO Correct Exception tree
 			throw new HHFKException($action . ": Is not a method of the class " . $this->_controller);
 		}
 		$this->_action = $action;
