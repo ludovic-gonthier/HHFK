@@ -1,20 +1,21 @@
 <?hh //strict
+
 namespace HHFK;
 
 use HHFK\Module\AModule;
 use HHFK\Service\ServiceProvider;
 use HHFK\Service\Service;
-use HHFK\Parser\IniFileParser;
 
 class Kernel
 {
 	## TODO : instantiate with the environment variable
 	public function __construct()
 	{
-		$this->configure();
 		$this->init();
+		$this->configure();
+		$this->boot();
 
-		ServiceProvider::getInstance()->get("test.test_service");
+		echo "<pre>", var_dump($this->_provider->get("router")->provided()), "</pre>";
 	}
 	/**
 	 * Load the configuration of the application
@@ -26,10 +27,8 @@ class Kernel
 		require_once "../conf/services.hh";
 
 		// Importing routes configuration
-		$parser = new IniFileParser();
-		$routes = $parser->parseFile("../conf/routes.ini");
-		$provider->get("router")->prepare($routes);
-		echo "<pre>", var_dump($provider->get("router")->provided()), "</pre>";
+		$routes = $this->_provider->get("parser")->parseFile("../conf/routes.ini");
+		$this->_provider->get("router")->prepare($routes);
 	}
 
 	/**
@@ -37,18 +36,23 @@ class Kernel
 	 */
 	protected function init():void
 	{
+		$this->_provider = ServiceProvider::getInstance();
+		// Providing the router as a service
+		$this->_provider->register(new Service("router", "HHFK\Route\Router"));
+		// Provide the INI file parser as a service
+		$this->_provider->register(new Service("parser", "HHFK\Parser\IniFileParser"));
+
 		self::$_modules = Vector<AModule>{
 			new \Test\TestModule\TestModule,
 			new \Test\HomeModule\HomeModule
 		};
-		// Providing the router as a service
-		$provider = ServiceProvider::getInstance();
-		$provider->register(new Service("router", "HHFK\Route\Router"));
 	}
 
-	public static function loadedModule()
+	protected function boot()
 	{
-		return self::$_modules;
+		foreach (self::$_modules as $module) {
+			$module->boot($this->_provider);
+		}
 	}
 
 	/**
@@ -77,6 +81,6 @@ class Kernel
 		return self::$_modules;
 	}
 
-
+	protected ServiceProvider $_provider;
 	protected static Vector<AModule> $_modules;
 }

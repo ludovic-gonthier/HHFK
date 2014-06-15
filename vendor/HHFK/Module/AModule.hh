@@ -27,9 +27,17 @@ abstract class AModule
 
 		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
 		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
-		$this->loadConfigurations();
-		$this->registerControllers();
+	}
 
+	/**
+	 * Boot the module
+	 * 
+	 * @param  ServiceProvider $provider
+	 */
+	public function boot(ServiceProvider $provider):void
+	{
+		$this->loadConfigurations($provider);
+		$this->registerControllers();
 	}
 
 	/**
@@ -42,9 +50,8 @@ abstract class AModule
 		// Load the Module's route configuration if any
 		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
 		if (file_exists($routesConfig)) {
-			$parser = new IniFileParser();
-			$routes = $parser->parseFile($routesConfig);
-			ServiceProvider::getInstance()->get("router")->prepare($routes);
+			$routes = $provider->get("parser")->parseFile($routesConfig);
+			$provider->get("router")->prepare($routes);
 		}
 		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.hh";
 		if (file_exists($servicesConfig)){
