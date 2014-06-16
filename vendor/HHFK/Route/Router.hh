@@ -31,11 +31,9 @@ class Router{
     {
         foreach ($configuration as $name => $parameters) {
             if (!array_key_exists("pattern", $parameters)) {
-                ## TODO Correct Exception
                 throw new BadConfigurationException("Route not correctly formatted: no pattern set.");
             }
             if (!array_key_exists("controller", $parameters)) {
-                ## TODO Correct Exception
                 throw new BadConfigurationException("Route not correctly formatted: no controller provided.");
             }
             $route = new Route($parameters["pattern"], $parameters["controller"]);
