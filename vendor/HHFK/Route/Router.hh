@@ -6,6 +6,7 @@ use HHFK\Exception\Class\MethodNotFoundException;
 use HHFK\Exception\Route\BadConfigurationException;
 
 use HHFK\Http\Response;
+use HHFK\Http\Request;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -69,15 +70,15 @@ class Router{
      * Find the correct route corresponding to the URL
      * Call the controller for the route action, with the route datas
      * 
-     * @param  Url    $url Url to resolve
+     * @param  Request    $request Request to resolve
      * 
      * @return Response The response of the route call
      * @throws Exception If trying to call an unknown controller's action
      */
-    public function resolve(Url $url): Response
+    public function resolve(Request $request): Response
     {
-        $route = $this->fetchRoute($url);
-        $controller = new ($route->getController());
+        $route = $this->fetchRoute($request->getBindedUrl());
+        $controller = new ($route->getController())($request);
         ## TODO Attach route and url to request
         ## TODO Check if authorised request
 

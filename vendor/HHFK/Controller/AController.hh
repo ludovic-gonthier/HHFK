@@ -13,15 +13,12 @@ use HHFK\Exception\HHFKException;
 
 abstract class AController{
 	public function __construct(
-		protected Request $_request = null,
-		protected Response $_response = null)
+		protected Request $_request = null)
 	{
 		if ($this->_request === null) {
 			$this->_request = new Request;
 		}
-		if ($this->_response === null) {
-			$this->_response = new Response;
-		}
+		$this->_response = new Response;
 		foreach (Kernel::getModules() as $module) {
 			if ($module->hasController(static::class)){
 				$this->_module = $module;
@@ -29,6 +26,7 @@ abstract class AController{
 			}
 		}
 		if (!isset($this->_module)){
+			## TODO Correct Exception
 			throw new HHFKException("Your controller is not attach to a module.");
 		}
 	}
