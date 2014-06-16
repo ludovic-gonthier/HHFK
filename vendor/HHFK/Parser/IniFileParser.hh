@@ -1,6 +1,7 @@
 <?hh //strict
 namespace HHFK\Parser;
-namespace HHFK\Exception\FileFormatException;
+
+use HHFK\Exception\FileFormatException;
 
 class IniFileParser
 {

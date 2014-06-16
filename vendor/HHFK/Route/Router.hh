@@ -2,7 +2,7 @@
 namespace HHFK\Route;
 
 use HHFK\Exception\Http\NotFoundException;
-use HHFK\Exception\Class\MethodNotFoundException;
+use HHFK\Exception\Oop\MethodNotFoundException;
 use HHFK\Exception\Route\BadConfigurationException;
 
 use HHFK\Http\Response;

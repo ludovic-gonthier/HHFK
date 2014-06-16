@@ -4,8 +4,8 @@ namespace HHFK\Route;
 use HHFK\Controller\Controller;
 
 use HHFK\Exception\HHFKException;
-use HHFK\Exception\Class\ClassNotFoundException;
-use HHFK\Exception\Class\MethodNotFoundException;
+use HHFK\Exception\Oop\ClassNotFoundException;
+use HHFK\Exception\Oop\MethodNotFoundException;
 
 class Route
 {
