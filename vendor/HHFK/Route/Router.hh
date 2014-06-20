@@ -83,13 +83,13 @@ class Router{
         ## TODO Check if authorised request
 
         ## TODO : ServiceProvider => store logger
-        $logger = new Logger(static::class);
-        $logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
-        $logger->addInfo($class . "->" . $route->getAction());
+        // $logger = new Logger(static::class);
+        // $logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
+        // $logger->addInfo(static::class . "->" . $route->getAction());
 
         $handler = array($controller, $route->getAction());
         if (is_callable($handler) === false) {
-            $logger->addInfo($class . "->" . $route->getAction() . " FAILED");
+            // $logger->addInfo(static::class . "->" . $route->getAction() . " FAILED");
             throw new MethodNotFoundException("Call to an undefined method '" . $route->getAction() . "' in the class '" . $controller . "'");
         }
         return call_user_func_array($handler, $route->getDatas()->toArray());
