@@ -37,7 +37,7 @@ class Url{
 	 * print the URL
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		$pass = ($this->_user || $this->_pass) ? $this->_pass . "@" : '';
 		$port = $this->_port === 0 ? '' : $this->_port;

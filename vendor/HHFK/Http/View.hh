@@ -25,7 +25,7 @@ class View
 	 * Display the view
 	 * @return [type]
 	 */
-	public function display()
+	public function display():void
 	{
 		echo $this->_html;
 	}

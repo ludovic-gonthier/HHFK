@@ -137,8 +137,8 @@ abstract class AModule
 	protected string $_namespace;
 	protected string $_name;
 
-	protected string $_controllerPath;
-	protected string $_configurationPath;
+	private string $_controllerPath;
+	private string $_configurationPath;
 
 	protected Vector<AController> $_controllers;
 }
