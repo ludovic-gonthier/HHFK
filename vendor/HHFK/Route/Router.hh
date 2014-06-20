@@ -18,7 +18,7 @@ class Router{
 
     public function __construct()
     {
-        $this->_routes = new Map<string, Route>;
+        $this->_routes = new Map<string, Route>();
     }
 
     /**

@@ -23,7 +23,7 @@ class Route
 	{
 		// If the controller is not a valid class
 		$this->checkIsValidController();
-		$this->_datas = new Map<string, mixed>;
+		$this->_datas = new Map<string, mixed>();
 	}
 
 	/**

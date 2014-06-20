@@ -9,6 +9,7 @@ class Request
 	public function __construct(Url $url)
 	{
 		$this->_url = $url;
+		$this->_route = null;
 	}
 
 	/**
@@ -30,7 +31,7 @@ class Request
 		$this->_url = $url;
 	}
 
-	public function getBindedRoute(): Route
+	public function getBindedRoute(): ?Route
 	{
 		return $this->_route;
 	}

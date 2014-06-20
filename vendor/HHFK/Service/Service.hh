@@ -6,8 +6,9 @@ class Service
 	public function __construct(
 		protected string $_name, 
 		protected string $_class,
-		protected array $_parameters = null)
+		protected array $_parameters = array())
 	{
+		$this->_instance = null;
 	}
 
 	/**
@@ -30,7 +31,7 @@ class Service
 				
 				$provider = ServiceProvider::getInstance();
 				if ($provider->serviceExists($parameter)) {// instance of Service
-					$this->_parameters[$name] = $povider->get($parameter);
+					$this->_parameters[$name] = $provider->get($parameter);
 				}
 			}
 			$reflect = new \Reflectionclass($this->_class);

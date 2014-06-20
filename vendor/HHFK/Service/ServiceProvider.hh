@@ -10,7 +10,7 @@ class ServiceProvider
 {
 	protected function __construct()
 	{
-		$this->_services = new Map<string, Service>;
+		$this->_services = new Map<string, Service>();
 	}
 
 	/**

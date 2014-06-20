@@ -5,6 +5,10 @@ class View
 {
 	const FILE_EXTENSION = ".html";
 
+	public function __construct()
+	{
+		$this->_html = "";
+	}
 	/**
 	 * Build the view from a template file
 	 * 
