@@ -13,12 +13,13 @@ use HHFK\Exception\HHFKException;
 
 abstract class AController{
 	public function __construct(
-		protected Request $_request = null)
+		protected ?Request $_request = null)
 	{
 		if ($this->_request === null) {
-			$this->_request = new Request;
+			$this->_request = new Request();
 		}
-		$this->_response = new Response;
+		$this->_response = new Response();
+		$this->_module = null;
 		foreach (Kernel::getModules() as $module) {
 			if ($module->hasController(static::class)){
 				$this->_module = $module;
@@ -87,5 +88,6 @@ abstract class AController{
 		return $this->_module;
 	}
 
+	protected Response $_response;
 	protected AModule $_module;
 }

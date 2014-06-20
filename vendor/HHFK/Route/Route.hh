@@ -22,8 +22,9 @@ class Route
 		private string $_controller)
 	{
 		// If the controller is not a valid class
-		$this->checkIsValidController();
-		$this->_datas = new Map<string, mixed>();
+		$this->_datas = new Map();
+		$this->_name = "";
+		self->checkIsValidController();
 	}
 
 	/**

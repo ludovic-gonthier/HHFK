@@ -24,14 +24,14 @@ class Url{
 		if (($parsed = \parse_url($url)) === false){
 			throw new HHFKException($url . ": Is not a valid URL");
 		}
-		$this->_scheme   = isset($parsed[self::URL_SCHEME]) ? $parsed[self::URL_SCHEME] . '://' : '';
+		$this->_scheme   = isset($parsed[self::URL_SCHEME]) ? $parsed[self::URL_SCHEME] : '';
 		$this->_host     = isset($parsed[self::URL_HOST]) ? $parsed[self::URL_HOST] : '';
-		$this->_port     = isset($parsed[self::URL_PORT]) ? ':' . $parsed[self::URL_PORT] : 0;
+		$this->_port     = isset($parsed[self::URL_PORT]) ? $parsed[self::URL_PORT] : 0;
 		$this->_user     = isset($parsed[self::URL_USER]) ? $parsed[self::URL_USER] : '';
-		$this->_pass     = isset($parsed[self::URL_PASS]) ? ':' . $parsed[self::URL_PASS]  : '';
+		$this->_pass     = isset($parsed[self::URL_PASS]) ? $parsed[self::URL_PASS]  : '';
 		$this->_path     = isset($parsed[self::URL_PATH]) ? $parsed[self::URL_PATH] : '';
-		$this->_query    = isset($parsed[self::URL_QUERY]) ? '?' . $parsed[self::URL_QUERY] : '';
-		$this->_fragment = isset($parsed[self::URL_FRAGMENT]) ? '#' . $parsed[self::URL_FRAGMENT] : '';
+		$this->_query    = isset($parsed[self::URL_QUERY]) ? $parsed[self::URL_QUERY] : '';
+		$this->_fragment = isset($parsed[self::URL_FRAGMENT]) ? $parsed[self::URL_FRAGMENT] : '';
 	}
 	/**
 	 * print the URL
@@ -39,11 +39,11 @@ class Url{
 	 */
 	public function __toString(): string
 	{
-		$pass = ($this->_user || $this->_pass) ? $this->_pass . "@" : '';
-		$port = $this->_port === 0 ? '' : $this->_port;
+		$pass = ($this->_user || $this->_pass) ? ':' . $this->_pass . "@" : '';
+		$port = $this->_port === 0 ? '' : ':' . $this->_port;
 		return sprintf("%s%s%s%s%s%s%s%s",
-			$this->_scheme, $this->_user, $pass, $this->_host,
-			$port, $this->_path, $this->_query, $this->_fragment);
+			$this->_scheme . '://', $this->_user, $pass, $this->_host,
+			$port, $this->_path, '?' . $this->_query, '#' . $this->_fragment);
 	}
 
 	/**

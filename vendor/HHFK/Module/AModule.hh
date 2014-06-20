@@ -7,26 +7,20 @@ use HHFK\Service\ServiceProvider;
 
 use HHFK\Exception\BadDirectoryException;
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 abstract class AModule
 {
 	const string DEFAULT_CONTROLLER_FOLDER = "Controller",
 				 DEFAULT_VIEW_FOLDER = "View",
 				 DEFAULT_CONFIGURATION_FOLDER = "Configuration";
 
-	private Logger $_logger;
-
 	public function __construct()
 	{
-		$this->_controllers = new Vector<AController>();
-
-		$this->_logger = new Logger(static::class);
-		$this->_logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
-
-		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
-		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
+		$this->_controllers = new Vector();
+		$this->_name = "";
+		$this->_namespace = "";
+		$this->_path = "";
+		$this->_controllerPath = "";
+		$this->_configurationPath = "";
 	}
 
 	/**
@@ -36,6 +30,9 @@ abstract class AModule
 	 */
 	public function boot(ServiceProvider $provider):void
 	{
+		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
+		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
+
 		$this->loadConfigurations($provider);
 		$this->registerControllers();
 	}
@@ -78,7 +75,6 @@ abstract class AModule
 				continue;
 			}
 			$this->_controllers[] = $controller;
-			$this->_logger->addInfo("Attaching '" . static::class . "' to " . $controller );
 		}
 	}
 
@@ -140,5 +136,5 @@ abstract class AModule
 	private string $_controllerPath;
 	private string $_configurationPath;
 
-	protected Vector<AController> $_controllers;
+	protected Vector<string> $_controllers;
 }

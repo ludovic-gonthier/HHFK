@@ -31,7 +31,7 @@ class Request
 		$this->_url = $url;
 	}
 
-	public function getBindedRoute(): ?Route
+	public function getBindedRoute(): Route
 	{
 		return $this->_route;
 	}

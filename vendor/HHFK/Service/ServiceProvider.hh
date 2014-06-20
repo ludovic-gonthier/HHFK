@@ -10,7 +10,7 @@ class ServiceProvider
 {
 	protected function __construct()
 	{
-		$this->_services = new Map<string, Service>();
+		$this->_services = new Map();
 	}
 
 	/**
@@ -63,7 +63,7 @@ class ServiceProvider
 	public static function getInstance(): this
 	{
 		if (!isset(self::$_instance)) {
-			self::$_instance = new self;
+			self::$_instance = new self();
 		}
 		return self::$_instance;
 	}

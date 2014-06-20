@@ -18,7 +18,7 @@ class Router{
 
     public function __construct()
     {
-        $this->_routes = new Map<string, Route>();
+        $this->_routes = new Map();
     }
 
     /**
@@ -136,6 +136,7 @@ class Router{
         foreach ($this->_routes as $pattern => $route) {
             $this->replaceVariableInPattern($pattern);
             $regexp = "/^" . str_replace('/', "\/", $pattern) . "$/";
+            $match = array();
             if (preg_match($regexp, $url->getPath(), $match)) {
                 foreach ($match as $key => $value) {
                     if (is_int($key)) {

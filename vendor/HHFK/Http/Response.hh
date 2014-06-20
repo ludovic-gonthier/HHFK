@@ -28,7 +28,7 @@ class Response
 	 * 
 	 * @return Response
 	 */
-	public function render(string $template, AModule $module, mixed $data = array()): this
+	public function render(string $template, AModule $module, array $data = array()): this
 	{
 		$directory = $module->getPath() . DIRECTORY_SEPARATOR;
 		
