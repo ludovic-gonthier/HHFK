@@ -7,6 +7,8 @@ use HHFK\Http\Request;
 use HHFK\Http\Response;
 use HHFK\Http\RedirectResponse;
 
+use HHFK\Route\Url;
+
 use HHFK\Module\AModule;
 
 use HHFK\Exception\HHFKException;
@@ -16,10 +18,10 @@ abstract class AController{
 		protected ?Request $_request = null)
 	{
 		if ($this->_request === null) {
-			$this->_request = new Request();
+			$this->_request = Request::fromCurrentUrl();
 		}
 		$this->_response = new Response();
-		$this->_module = null;
+		$this->_module = (AModule) null;
 		foreach (Kernel::getModules() as $module) {
 			if ($module->hasController(static::class)){
 				$this->_module = $module;

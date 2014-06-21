@@ -24,7 +24,9 @@ class Route
 		// If the controller is not a valid class
 		$this->_datas = new Map();
 		$this->_name = "";
-		self->checkIsValidController();
+		$this->_requestType = self::GET;
+		$this->_action = self::DEFAULT_ACTION;
+		$this->checkIsValidController();
 	}
 
 	/**
@@ -173,7 +175,7 @@ class Route
 	}
 
 	private string $_name;
-	private string $_requestType = self::GET;
-	private string $_action = self::DEFAULT_ACTION;
+	private string $_requestType;
+	private string $_action;
 	private Map<string, mixed> $_datas;
 }
