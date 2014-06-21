@@ -18,6 +18,7 @@ class ServiceProvider<T>
 	protected function __construct()
 	{
 		$this->_services = new Map();
+		$this->_preparedService = new Vector();
 	}
 
 	/**
@@ -29,19 +30,29 @@ class ServiceProvider<T>
 	public function prepare(array $configuration): void
 	{
 		$parameters = $configuration['parameters'];
-		foreach ($configuration['services'] as $name => $service) {
+		foreach ($configuration['services'] as $name => &$service) {
 			if (!array_key_exists('class', $service)) {
 				##TODO Correct Exception
 				throw new HHFKException("Cannot register a service without a 'class' provided in the configuration file.");
 			}
 			$service['class'] = $this->_replaceVariables($service['class'], $parameters);
-			if (!array_key_exists('arguments', $service)) {
-				continue;
+			if (array_key_exists('arguments', $service)) {
+				foreach ($service['arguments'] as &$arg) {
+					$arg = $this->_replaceVariables($arg, $parameters);
+				}
+			} else {
+				$service['arguments'] = array();
 			}
-			foreach ($service['arguments'] as &$arg) {
-				$arg = $this->_replaceVariables($arg, $parameters);
-			}
-			$this->register($name, $service['class'], $service['arguments']);
+			$this->_preparedService->add(Pair{$name, $service});
+		}
+	}
+
+	public function boot()
+	{
+		while ($this->_preparedService->count() > 0) {
+			$popped = $this->_preparedService->pop();
+
+			$this->register($popped[0], $popped[1]['class'], $popped[1]['arguments']);
 		}
 	}
 
@@ -82,23 +93,42 @@ class ServiceProvider<T>
 	public function register(string $name, string $class, array $parameters = array()):void
 	{
 		foreach ($parameters as $label => $parameter) {
-			echo "<pre>", var_dump($parameter), "</pre>";
 			// If a parameter is a registered class
 			if (class_exists($parameter) === true) {
+				$parameters[$label] = new $parameter();
 				continue;
 			}
-			echo "<pre>", var_dump($parameter), "</pre>";
 			##TODO take care of recursive Servie Registration
 			if ($this->serviceExists($parameter)) {// instance of Service
-				echo "<pre>", var_dump($this->get($parameter)), "</pre>";
 				$parameters[$label] = $this->get($parameter);
+			} 
+			else {
+				$pair = null;
+				foreach ($this->_preparedService as $service) {
+					if ($service[0] === $parameter){
+						$pair = $service;
+						break;
+					}
+				}
+				if (!isset($pair)) {
+					continue;
+				}
+				if (array_key_exists('delayed', $pair[1])) {
+					##TODO Correct Exception
+					throw new HHFKException("Cycle service inclusion");
+				}
+				$this->_preparedService->removeKey($this->_preparedService->linearSearch($pair));
+				$this->_preparedService->add(Pair{$name, array(
+					'class' => $class,
+					'arguments' => $parameters,
+					'delayed' => true
+				)
+				});
 			}
 		}
 		if (class_exists($class) === false) {
 			throw new ClassNotFoundException("'". $class . "': no such class declared.");
 		}
-		if ($name == "test.foo")
-			die;
 		$reflect = new \Reflectionclass($class);
 		$this->_services[$name] = $reflect->newInstanceArgs($parameters);
 	}
@@ -149,5 +179,6 @@ class ServiceProvider<T>
 	}
 
 	protected Map<string, T> $_services;
+	private Vector<Pair<string, array>> $_preparedService;
 	private static ?ServiceProvider $_instance = null;
 }

@@ -24,7 +24,6 @@ class Kernel
 		\date_default_timezone_set("Europe/Paris");
 		$parser = $this->_provider->get("parser");
 		$services = $parser->parseFile("../conf/services.ini");
-		echo "<pre>", var_dump($services), "</pre>";
 		$this->_provider->prepare($services);
 		
 		// Importing routes configuration
@@ -58,6 +57,7 @@ class Kernel
 		foreach (self::$_modules as $module) {
 			$module->boot($this->_provider);
 		}
+		$this->_provider->boot();
 	}
 
 	/**
