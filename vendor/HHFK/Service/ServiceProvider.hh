@@ -6,7 +6,7 @@ use HHFK\Exception\HHFKException;
 
 
 ## TODO pass service provider to Controller as attributes $_services;
-class ServiceProvider
+class ServiceProvider<T>
 {
 	protected function __construct()
 	{
@@ -18,15 +18,26 @@ class ServiceProvider
 	 * 
 	 * @param  Service $service
 	 */
-	public function register(Service $service):void
+	public function register(string $name, string $class, array $parameters = array()):void
 	{
-		$this->_services[$service->getName()] = $service;
+		foreach ($parameters as $label => $parameter) {
+			// If a parameter is a registered class
+			if (class_exists($parameter) === false) {
+				continue;
+			}
+			##TODO take care of recursive Servie Registration
+			if ($this->serviceExists($parameter)) {// instance of Service
+				$parameters[$label] = $this->get($parameter);
+			}
+		}
+		$reflect = new \Reflectionclass($class);
+		$this->_services[$name] = $reflect->newInstanceArgs($parameters);
 	}
 	/**
 	 * Return the registered service in the provider
 	 * @return ImmMap<string, Service>
 	 */
-	public function registered():ImmMap<string, Service>
+	public function registered():ImmMap<string, T>
 	{
 		return $this->_services->toImmMap();
 	}
@@ -47,27 +58,28 @@ class ServiceProvider
 	 * @return mixed Instance of the service
 	 * @throws HHFKException If the service is not registered
 	 */
-	public function get(string $serviceName): mixed
+	public function get(string $serviceName): T
 	{
 		$service = $this->_services->get($serviceName);
 		if ($service === null) {
 			throw new NotRegisteredException("Service '" . $serviceName . "' requested is not registered");
 		}
-		return $service->get();
+		return $service;
 	}
 
 	/**
 	 * Return an instance of the ServiceProvider
 	 * @return ServiceProvider
 	 */
-	public static function getInstance(): this
+	public static function getInstance(): ?this
 	{
-		if (!isset(self::$_instance)) {
-			self::$_instance = new self();
+		$instance = self::$_instance;
+		if (!isset($instance)) {
+			$instance = new static();
 		}
-		return self::$_instance;
+		return $instance;
 	}
 
-	protected Map<string, Service> $_services;
-	protected static ServiceProvider $_instance = null;
+	protected Map<string, T> $_services;
+	private static ?ServiceProvider $_instance = null;
 }

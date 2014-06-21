@@ -39,9 +39,9 @@ class Kernel
 	{
 		$this->_provider = ServiceProvider::getInstance();
 		// Providing the router as a service
-		$this->_provider->register(new Service("router", "HHFK\Route\Router"));
+		$this->_provider->register("router", "HHFK\Route\Router");
 		// Provide the INI file parser as a service
-		$this->_provider->register(new Service("parser", "HHFK\Parser\IniFileParser"));
+		$this->_provider->register("parser", "HHFK\Parser\IniFileParser");
 
 		self::$_modules = Vector<AModule>{
 			new \Test\TestModule\TestModule,
