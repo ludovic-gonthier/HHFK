@@ -52,7 +52,7 @@ abstract class AModule
 			$routes = $parser->parseFile($routesConfig);
 			$provider->get("router")->prepare($routes);
 		}
-		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.hh";
+		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.ini";
 		if (file_exists($servicesConfig)){
 			$services = $parser->parseFile($servicesConfig);
 			$provider->prepare($services);

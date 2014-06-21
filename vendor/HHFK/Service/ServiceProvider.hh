@@ -29,7 +29,7 @@ class ServiceProvider<T>
 	 */
 	public function prepare(array $configuration): void
 	{
-		$parameters = $configuration['parameters'];
+		$parameters = (array_key_exists('parameters', $configuration) ? $configuration['parameters'] : array());
 		foreach ($configuration['services'] as $name => &$service) {
 			if (!array_key_exists('class', $service)) {
 				##TODO Correct Exception
