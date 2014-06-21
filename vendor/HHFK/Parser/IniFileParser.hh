@@ -18,7 +18,7 @@ class IniFileParser
 	 */
 	public function parseFile(string $filename): array
 	{
-		$ini = \parse_ini_file($filename, true);
+		$ini = \parse_ini_file($filename, true, INI_SCANNER_NORMAL);
 		if ($ini === false){
 			throw new FileFormatException("INI file: '" . $filename . "'. Not correctly formatted INI file");
 		}

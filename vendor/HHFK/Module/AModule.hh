@@ -17,11 +17,11 @@ abstract class AModule
 	{
 		$this->_controllers = new Vector();
 		$this->_name = "";
-		$reflect = new \ReflectionObject($this);
-		$this->_namespace = $reflect->getNamespaceName();
-		$this->_path = dirname($reflect->getFilename());
 		$this->_controllerPath = "";
 		$this->_configurationPath = "";
+		$reflect = new \ReflectionObject($this);
+		$this->_path = dirname($reflect->getFilename());
+		$this->_namespace = $reflect->getNamespaceName();
 	}
 
 	/**
