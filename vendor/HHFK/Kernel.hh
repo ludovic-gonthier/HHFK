@@ -14,8 +14,6 @@ class Kernel
 		$this->init();
 		$this->configure();
 		$this->boot();
-
-		echo "<pre>", var_dump($this->_provider->get("router")->provided()), "</pre>";
 	}
 	/**
 	 * Load the configuration of the application
@@ -43,7 +41,6 @@ class Kernel
 		// Provide the INI file parser as a service
 		$this->_provider->register("parser", "HHFK\Parser\IniFileParser");
 
-		// echo "<pre>", var_dump($this->_provider->registered()); "</pre>";die;
 		self::$_modules = Vector<AModule>{
 			new \Test\TestModule\TestModule,
 			new \Test\HomeModule\HomeModule
