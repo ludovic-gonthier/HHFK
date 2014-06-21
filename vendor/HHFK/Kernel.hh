@@ -22,11 +22,13 @@ class Kernel
 	{
 		## TODO load the correct loacle from the configuration file
 		\date_default_timezone_set("Europe/Paris");
-		## TODO ParseIniFile for service configuration
-		require_once "../conf/services.hh";
-
+		$parser = $this->_provider->get("parser");
+		$services = $parser->parseFile("../conf/services.ini");
+		echo "<pre>", var_dump($services), "</pre>";
+		$this->_provider->prepare($services);
+		
 		// Importing routes configuration
-		$routes = $this->_provider->get("parser")->parseFile("../conf/routes.ini");
+		$routes = $parser->parseFile("../conf/routes.ini");
 		$this->_provider->get("router")->prepare($routes);
 	}
 

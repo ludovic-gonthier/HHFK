@@ -3,15 +3,75 @@ namespace HHFK\Service;
 
 use HHFK\Service\Service;
 use HHFK\Exception\HHFKException;
+use HHFK\Exception\Oop\ClassNotFoundException;
 use HHFK\Exception\NotRegisteredException;
 
 
 ## TODO pass service provider to Controller as attributes $_services;
 class ServiceProvider<T>
 {
+	const string OPEN_GLOBAL_VARIABLE = "{{",
+				 CLOSE_GLOBAL_VARIABLE = "}}",
+				 OPEN_LOCAL_VARIABLE = "{",
+				 CLOSE_LOCAL_VARIABLE = "}";
+
 	protected function __construct()
 	{
 		$this->_services = new Map();
+	}
+
+	/**
+	 * Fille the provider with the given configuration array
+	 * 
+	 * @param  array  $configuration
+	 * 
+	 */
+	public function prepare(array $configuration): void
+	{
+		$parameters = $configuration['parameters'];
+		foreach ($configuration['services'] as $name => $service) {
+			if (!array_key_exists('class', $service)) {
+				##TODO Correct Exception
+				throw new HHFKException("Cannot register a service without a 'class' provided in the configuration file.");
+			}
+			$service['class'] = $this->_replaceVariables($service['class'], $parameters);
+			if (!array_key_exists('arguments', $service)) {
+				continue;
+			}
+			foreach ($service['arguments'] as &$arg) {
+				$arg = $this->_replaceVariables($arg, $parameters);
+			}
+			$this->register($name, $service['class'], $service['arguments']);
+		}
+	}
+
+	/**
+	 * Replace configuration variable of the given value
+	 * 
+	 * @param  string $value
+	 * @param  array  $parameters
+	 * 
+	 * @return The correctly replaced value
+	 */
+	##TODO Function as Class => Used by router too
+	##TODO Replace global variables
+	private function _replaceVariables(string $value, array $parameters): string
+	{
+		$initialPattern = $value; // For correct pattern in exception
+        $openBracket = strpos($value, self::OPEN_LOCAL_VARIABLE);
+        while ($openBracket !== false) {
+            $closeBracket = strpos($value, self::CLOSE_LOCAL_VARIABLE);
+            if ($closeBracket === false) {
+                throw new BadPatternFormatException("Bad pattern format: mismatched closing bracket in the pattern: '" . $initialPattern . "'");
+            }
+            $key = substr($value, $openBracket + 1,  $closeBracket - $openBracket - 1);
+            if (array_key_exists($key, $parameters)) {
+            	$value = substr($value, 0, $openBracket) . $parameters[$key] . substr($value, $closeBracket + 1);
+            }
+
+            $openBracket = strpos($value, self::OPEN_LOCAL_VARIABLE);
+        }
+        return $value;
 	}
 
 	/**
@@ -22,15 +82,23 @@ class ServiceProvider<T>
 	public function register(string $name, string $class, array $parameters = array()):void
 	{
 		foreach ($parameters as $label => $parameter) {
+			echo "<pre>", var_dump($parameter), "</pre>";
 			// If a parameter is a registered class
-			if (class_exists($parameter) === false) {
+			if (class_exists($parameter) === true) {
 				continue;
 			}
+			echo "<pre>", var_dump($parameter), "</pre>";
 			##TODO take care of recursive Servie Registration
 			if ($this->serviceExists($parameter)) {// instance of Service
+				echo "<pre>", var_dump($this->get($parameter)), "</pre>";
 				$parameters[$label] = $this->get($parameter);
 			}
 		}
+		if (class_exists($class) === false) {
+			throw new ClassNotFoundException("'". $class . "': no such class declared.");
+		}
+		if ($name == "test.foo")
+			die;
 		$reflect = new \Reflectionclass($class);
 		$this->_services[$name] = $reflect->newInstanceArgs($parameters);
 	}

@@ -34,7 +34,6 @@ abstract class AModule
 		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
 		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
 
-		// echo "<pre>", var_dump($provider->get("router")->provided()), "</pre>";die;
 		$this->loadConfigurations($provider);
 		$this->registerControllers();
 	}
@@ -46,15 +45,17 @@ abstract class AModule
 	 */
 	protected function loadConfigurations(ServiceProvider $provider): void
 	{
+		$parser = $provider->get("parser");
 		// Load the Module's route configuration if any
 		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
 		if (file_exists($routesConfig)) {
-			$routes = $provider->get("parser")->parseFile($routesConfig);
+			$routes = $parser->parseFile($routesConfig);
 			$provider->get("router")->prepare($routes);
 		}
 		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.hh";
 		if (file_exists($servicesConfig)){
-			require_once $servicesConfig;
+			$services = $parser->parseFile($servicesConfig);
+			$provider->prepare($services);
 		}
 	}
 
