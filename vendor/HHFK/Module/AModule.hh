@@ -17,8 +17,9 @@ abstract class AModule
 	{
 		$this->_controllers = new Vector();
 		$this->_name = "";
-		$this->_namespace = "";
-		$this->_path = "";
+		$reflect = new \ReflectionObject($this);
+		$this->_namespace = $reflect->getNamespaceName();
+		$this->_path = dirname($reflect->getFilename());
 		$this->_controllerPath = "";
 		$this->_configurationPath = "";
 	}
@@ -33,6 +34,7 @@ abstract class AModule
 		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
 		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
 
+		// echo "<pre>", var_dump($provider->get("router")->provided()), "</pre>";die;
 		$this->loadConfigurations($provider);
 		$this->registerControllers();
 	}
@@ -96,10 +98,6 @@ abstract class AModule
 	 */
 	public function getNamespace(): string
 	{
-		if (!isset($this->_namespace)){
-			$reflect = new \ReflectionObject($this);
-			$this->_namespace = $reflect->getNamespaceName();
-		}
 		return $this->_namespace;
 	}
 
@@ -109,10 +107,6 @@ abstract class AModule
 	 */
 	public function getPath(): string
 	{
-		if (!isset($this->_path)) {
-			$reflect = new \ReflectionObject($this);
-			$this->_path = dirname($reflect->getFilename());
-		}
 		return $this->_path;
 	}
 

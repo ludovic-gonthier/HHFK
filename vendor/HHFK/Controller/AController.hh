@@ -21,7 +21,7 @@ abstract class AController{
 			$this->_request = Request::fromCurrentUrl();
 		}
 		$this->_response = new Response();
-		$this->_module = (AModule) null;
+		$this->_module = (AModule);
 		foreach (Kernel::getModules() as $module) {
 			if ($module->hasController(static::class)){
 				$this->_module = $module;

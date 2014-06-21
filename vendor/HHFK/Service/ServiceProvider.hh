@@ -3,6 +3,7 @@ namespace HHFK\Service;
 
 use HHFK\Service\Service;
 use HHFK\Exception\HHFKException;
+use HHFK\Exception\NotRegisteredException;
 
 
 ## TODO pass service provider to Controller as attributes $_services;
@@ -73,11 +74,10 @@ class ServiceProvider<T>
 	 */
 	public static function getInstance(): ?this
 	{
-		$instance = self::$_instance;
-		if (!isset($instance)) {
-			$instance = new static();
+		if (!isset(self::$_instance)) {
+			self::$_instance = new static();
 		}
-		return $instance;
+		return self::$_instance;
 	}
 
 	protected Map<string, T> $_services;
