@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Service;
 
 use HHFK\Service\Service;

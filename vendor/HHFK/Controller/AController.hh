@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Controller;
 
 use HHFK\Kernel;

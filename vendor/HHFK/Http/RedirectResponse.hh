@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Http;
 
 class RedirectResponse extends Response

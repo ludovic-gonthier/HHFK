@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Module;
 
 use HHFK\Controller\AController;

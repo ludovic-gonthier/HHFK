@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace Test\TestModule\Service;
 
 class Test

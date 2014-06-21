@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Route;
 
 use HHFK\Controller\Controller;

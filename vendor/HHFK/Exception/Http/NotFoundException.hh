@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Exception\Http;
 
 use HHFK\Exception\HHFKException;

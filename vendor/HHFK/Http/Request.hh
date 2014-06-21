@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace HHFK\Http;
 
 use HHFK\Route\Route;

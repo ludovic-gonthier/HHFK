@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 
 use HHFK\Service\ServiceProvider;
 use HHFK\Service\Service;

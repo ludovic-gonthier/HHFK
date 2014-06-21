@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 require_once "../vendor/autoload.php";
 
 use HHFK\Service\ServiceProvider;
