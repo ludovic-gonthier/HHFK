@@ -96,7 +96,7 @@ final class Service<T>
 		foreach ($parameters as $label => $parameter) {
 			// If a parameter is a registered class
 			if (class_exists($parameter) === true) {
-				##TODO Log warning that can't pass Class as argument to a Service
+				Service::get("logger")->warn("Can't pass a non-service class to as Service.", $parameter);
 				continue;
 			}
 			##TODO take care of recursive Servie Registration
