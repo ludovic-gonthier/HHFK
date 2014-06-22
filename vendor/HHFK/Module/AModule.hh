@@ -1,12 +1,11 @@
-<?hh
+<?hh //strict
 namespace HHFK\Module;
 
 use HHFK\Controller\AController;
+use HHFK\Parser\IniFileParser;
+use HHFK\Service\Service;
 
 use HHFK\Exception\BadDirectoryException;
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 abstract class AModule
 {
@@ -14,40 +13,61 @@ abstract class AModule
 				 DEFAULT_VIEW_FOLDER = "View",
 				 DEFAULT_CONFIGURATION_FOLDER = "Configuration";
 
-	private Logger $_logger;
-
 	public function __construct()
 	{
-		$this->_controllers = new Vector<AController>();
+		$this->_controllers = new Vector();
+		$this->_name = "";
+		$this->_controllerPath = "";
+		$this->_configurationPath = "";
+		$reflect = new \ReflectionObject($this);
+		$this->_path = dirname($reflect->getFilename());
+		$this->_namespace = $reflect->getNamespaceName();
+	}
 
-		$this->_logger = new Logger(static::class);
-		$this->_logger->pushHandler(new StreamHandler('/var/log/lgo/info.log', Logger::INFO));
+	/**
+	 * Boot the module
+	 * 
+	 * @param  ServiceProvider $provider
+	 */
+	public function boot():void
+	{
+		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
+		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
 
 		$this->loadConfigurations();
 		$this->registerControllers();
 	}
 
+	/**
+	 * Load the different configuration of the module
+	 * Must be put in the "Configuration" folder of the module
+	 * @param  ServiceProvider $provider
+	 */
 	protected function loadConfigurations(): void
 	{
-		// Load the Module's route configuration if any
-		$routesConfigurationPath = implode(
-			DIRECTORY_SEPARATOR,
-			array($this->getPath(),
-				  self::DEFAULT_CONFIGURATION_FOLDER,
-				  "routes.hh"
-			)
-		);
-		if (file_exists($routesConfigurationPath)){
-			require_once $routesConfigurationPath;
+		$parser = Service::get("parser");
+		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.ini";
+		if (file_exists($servicesConfig)){
+			$services = $parser->parseFile($servicesConfig);
+			Service::prepare($services);
 		}
-
+		// Load the Module's route configuration if any
+		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
+		if (file_exists($routesConfig)) {
+			$routes = $parser->parseFile($routesConfig);
+			Service::get("router")->prepare($routes);
+		}
 	}
 
+	/**
+	 * Register the controller of a module
+	 * @throws BadDirectoryException If the "Controller" directory not present
+	 */
 	protected function registerControllers(): void
 	{
-		$files = \scandir($dirname = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER);
+		$files = \scandir($this->_controllerPath);
 		if ($files === false){
-			throw new BadDirectoryException($dirname . ": Is not a valid directory");
+			throw new BadDirectoryException($this->_controllerPath . ": not a valid directory");
 		}
 		foreach (array_diff($files, array(".", "..")) as $controller){
 			//PSR-4 Naming
@@ -58,33 +78,44 @@ abstract class AModule
 				continue;
 			}
 			$this->_controllers[] = $controller;
-			$this->_logger->addInfo("Attaching '" . static::class . "' to " . $controller );
 		}
 	}
 
+	/**
+	 * Check that a module has a given controller provided
+	 * 
+	 * @param  string  $controller The controller class name to be checked
+	 * @return boolean
+	 */
 	public function hasController(string $controller): bool
 	{
 		return $this->_controllers->linearSearch($controller) !== -1;
 	}
 
+	/**
+	 * Return the namespace of the module
+	 * 
+	 * @return string namespace name
+	 */
 	public function getNamespace(): string
 	{
-		if (!isset($this->_namespace)){
-			$reflect = new \ReflectionObject($this);
-			$this->_namespace = $reflect->getNamespaceName();
-		}
 		return $this->_namespace;
 	}
 
+	/**
+	 * Return the path of the module
+	 * @return string Path
+	 */
 	public function getPath(): string
 	{
-		if (!isset($this->_path)) {
-			$reflect = new \ReflectionObject($this);
-			$this->_path = dirname($reflect->getFilename());
-		}
 		return $this->_path;
 	}
 
+	/**
+	 * Return the name of the Module
+	 * 
+	 * @return string Name of the module
+	 */
 	public function getName(): string
 	{
 		if (!isset($this->_name)) {
@@ -97,5 +128,8 @@ abstract class AModule
 	protected string $_namespace;
 	protected string $_name;
 
-	protected Vector<AController> $_controllers;
+	private string $_controllerPath;
+	private string $_configurationPath;
+
+	protected Vector<string> $_controllers;
 }
