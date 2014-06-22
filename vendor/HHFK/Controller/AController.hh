@@ -23,7 +23,7 @@ abstract class AController{
 			$this->_request = Request::fromCurrentUrl();
 		}
 		$this->_response = new Response();
-		$this->_module = (AModule);
+		$this->_module = null;
 		foreach (Kernel::getModules() as $module) {
 			if ($module->hasController(static::class)){
 				$this->_module = $module;
@@ -63,7 +63,7 @@ abstract class AController{
 	 */
 	protected function renderFromModule(string $module, string $template): Response
 	{
-		if (!class_exists($module)) {
+		if (!\class_exists($module)) {
 			throw new HHFKException($module . ": Is not a valid Module Class");
 		}
 		$module = Kernel::getModule($module);
