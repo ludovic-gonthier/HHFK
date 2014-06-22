@@ -43,8 +43,8 @@ class Kernel
 		$this->_provider->register("parser", "HHFK\Parser\IniFileParser");
 
 		self::$_modules = Vector<AModule>{
-			new \Test\TestModule\TestModule,
-			new \Test\HomeModule\HomeModule
+			new \Test\TestModule\TestModule(),
+			new \Test\HomeModule\HomeModule()
 		};
 	}
 
@@ -60,6 +60,11 @@ class Kernel
 		$this->_provider->boot();
 	}
 
+
+	public function provider(): ServiceProvider
+	{
+		return $this->_provider;
+	}
 	/**
 	 * Fetch a loaded module
 	 * 

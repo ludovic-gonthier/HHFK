@@ -8,5 +8,4 @@ use HHFK\Kernel;
 // Kernel/Or W-e class to load configuration for specified environment
 $kernel = new Kernel();
 
-$provider = ServiceProvider::getInstance();
-$provider->get("router")->resolve(Request::fromCurrentUrl())->send();
+$kernel->provider()->get("router")->resolve(Request::fromCurrentUrl())->send();

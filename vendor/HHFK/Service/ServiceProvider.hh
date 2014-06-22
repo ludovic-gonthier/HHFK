@@ -8,7 +8,7 @@ use HHFK\Exception\NotRegisteredException;
 
 
 ## TODO pass service provider to Controller as attributes $_services;
-class ServiceProvider<T>
+final class ServiceProvider<T>
 {
 	const string OPEN_GLOBAL_VARIABLE = "{{",
 				 CLOSE_GLOBAL_VARIABLE = "}}",

@@ -11,6 +11,8 @@ use HHFK\Route\Url;
 
 use HHFK\Module\AModule;
 
+use HHFK\Service\ServiceProvider;
+
 use HHFK\Exception\HHFKException;
 
 abstract class AController{
@@ -22,6 +24,7 @@ abstract class AController{
 		}
 		$this->_response = new Response();
 		$this->_module = (AModule);
+		$this->_services = ServiceProvider::getInstance();
 		foreach (Kernel::getModules() as $module) {
 			if ($module->hasController(static::class)){
 				$this->_module = $module;
@@ -92,4 +95,5 @@ abstract class AController{
 
 	protected Response $_response;
 	protected AModule $_module;
+	protected ServiceProvider $_services;
 }
