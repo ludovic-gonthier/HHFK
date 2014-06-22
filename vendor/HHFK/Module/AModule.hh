@@ -3,7 +3,7 @@ namespace HHFK\Module;
 
 use HHFK\Controller\AController;
 use HHFK\Parser\IniFileParser;
-use HHFK\Service\ServiceProvider;
+use HHFK\Service\Service;
 
 use HHFK\Exception\BadDirectoryException;
 
@@ -29,12 +29,12 @@ abstract class AModule
 	 * 
 	 * @param  ServiceProvider $provider
 	 */
-	public function boot(ServiceProvider $provider):void
+	public function boot():void
 	{
 		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
 		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
 
-		$this->loadConfigurations($provider);
+		$this->loadConfigurations();
 		$this->registerControllers();
 	}
 
@@ -43,19 +43,19 @@ abstract class AModule
 	 * Must be put in the "Configuration" folder of the module
 	 * @param  ServiceProvider $provider
 	 */
-	protected function loadConfigurations(ServiceProvider $provider): void
+	protected function loadConfigurations(): void
 	{
-		$parser = $provider->get("parser");
+		$parser = Service::get("parser");
+		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.ini";
+		if (file_exists($servicesConfig)){
+			$services = $parser->parseFile($servicesConfig);
+			Service::prepare($services);
+		}
 		// Load the Module's route configuration if any
 		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
 		if (file_exists($routesConfig)) {
 			$routes = $parser->parseFile($routesConfig);
-			$provider->get("router")->prepare($routes);
-		}
-		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.ini";
-		if (file_exists($servicesConfig)){
-			$services = $parser->parseFile($servicesConfig);
-			$provider->prepare($services);
+			Service::get("router")->prepare($routes);
 		}
 	}
 

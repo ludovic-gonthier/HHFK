@@ -1,24 +1,24 @@
 <?hh //strict
 namespace HHFK\Service;
 
-use HHFK\Service\Service;
 use HHFK\Exception\HHFKException;
 use HHFK\Exception\Oop\ClassNotFoundException;
 use HHFK\Exception\NotRegisteredException;
 
 
 ## TODO pass service provider to Controller as attributes $_services;
-final class ServiceProvider<T>
+final class Service<T>
 {
 	const string OPEN_GLOBAL_VARIABLE = "{{",
 				 CLOSE_GLOBAL_VARIABLE = "}}",
 				 OPEN_LOCAL_VARIABLE = "{",
 				 CLOSE_LOCAL_VARIABLE = "}";
 
-	protected function __construct()
+	/**
+	 * Private constructor because it's a static class
+	 */
+	private function __construct()
 	{
-		$this->_services = new Map();
-		$this->_preparedService = new Vector();
 	}
 
 	/**
@@ -27,7 +27,7 @@ final class ServiceProvider<T>
 	 * @param  array  $configuration
 	 * 
 	 */
-	public function prepare(array $configuration): void
+	public static function prepare(array $configuration): void
 	{
 		$parameters = (array_key_exists('parameters', $configuration) ? $configuration['parameters'] : array());
 		foreach ($configuration['services'] as $name => &$service) {
@@ -35,25 +35,26 @@ final class ServiceProvider<T>
 				##TODO Correct Exception
 				throw new HHFKException("Cannot register a service without a 'class' provided in the configuration file.");
 			}
-			$service['class'] = $this->_replaceVariables($service['class'], $parameters);
+			$service['class'] = self::_replaceVariables($service['class'], $parameters);
 			if (array_key_exists('arguments', $service)) {
 				foreach ($service['arguments'] as &$arg) {
-					$arg = $this->_replaceVariables($arg, $parameters);
+					$arg = self::_replaceVariables($arg, $parameters);
 				}
 			} else {
 				$service['arguments'] = array();
 			}
-			$this->_preparedService->add(Pair{$name, $service});
+			self::$_waiting->add(Pair{$name, $service});
 		}
 	}
 
-	public function boot()
+	public static function boot()
 	{
-		while ($this->_preparedService->count() > 0) {
-			$popped = $this->_preparedService->pop();
+		while (self::$_waiting->count() > 0) {
+			$popped = self::$_waiting->pop();
 
-			$this->register($popped[0], $popped[1]['class'], $popped[1]['arguments']);
+			self::register($popped[0], $popped[1]['class'], $popped[1]['arguments']);
 		}
+		self::$_booted = true;
 	}
 
 	/**
@@ -66,7 +67,7 @@ final class ServiceProvider<T>
 	 */
 	##TODO Function as Class => Used by router too
 	##TODO Replace global variables
-	private function _replaceVariables(string $value, array $parameters): string
+	private static function _replaceVariables(string $value, array $parameters): string
 	{
 		$initialPattern = $value; // For correct pattern in exception
         $openBracket = strpos($value, self::OPEN_LOCAL_VARIABLE);
@@ -90,21 +91,21 @@ final class ServiceProvider<T>
 	 * 
 	 * @param  Service $service
 	 */
-	public function register(string $name, string $class, array $parameters = array()):void
+	public static function register(string $name, string $class, array $parameters = array()):void
 	{
 		foreach ($parameters as $label => $parameter) {
 			// If a parameter is a registered class
 			if (class_exists($parameter) === true) {
-				$parameters[$label] = new $parameter();
+				##TODO Log warning that can't pass Class as argument to a Service
 				continue;
 			}
 			##TODO take care of recursive Servie Registration
-			if ($this->serviceExists($parameter)) {// instance of Service
-				$parameters[$label] = $this->get($parameter);
+			if (self::exists($parameter)) {// instance of Service
+				$parameters[$label] = self::get($parameter);
 			} 
 			else {
 				$pair = null;
-				foreach ($this->_preparedService as $service) {
+				foreach (self::$_waiting as $service) {
 					if ($service[0] === $parameter){
 						$pair = $service;
 						break;
@@ -117,8 +118,8 @@ final class ServiceProvider<T>
 					##TODO Correct Exception
 					throw new HHFKException("Cycle service inclusion");
 				}
-				$this->_preparedService->removeKey($this->_preparedService->linearSearch($pair));
-				$this->_preparedService->add(Pair{$name, array(
+				self::$_waiting->removeKey(self::$_waiting->linearSearch($pair));
+				self::$_waiting->add(Pair{$name, array(
 					'class' => $class,
 					'arguments' => $parameters,
 					'delayed' => true
@@ -130,15 +131,15 @@ final class ServiceProvider<T>
 			throw new ClassNotFoundException("'". $class . "': no such class declared.");
 		}
 		$reflect = new \Reflectionclass($class);
-		$this->_services[$name] = $reflect->newInstanceArgs($parameters);
+		self::$_services[$name] = $reflect->newInstanceArgs($parameters);
 	}
 	/**
 	 * Return the registered service in the provider
 	 * @return ImmMap<string, Service>
 	 */
-	public function registered():ImmMap<string, T>
+	public static function registered():ImmMap<string, T>
 	{
-		return $this->_services->toImmMap();
+		return self::$_services->toImmMap();
 	}
 	/**
 	 * Check if a service exists
@@ -146,9 +147,9 @@ final class ServiceProvider<T>
 	 * @param  string $serviceName
 	 * @return bool
 	 */
-	public function serviceExists(string $serviceName): bool
+	public static function exists(string $serviceName): bool
 	{
-		return $this->_services->contains($serviceName);
+		return self::$_services->contains($serviceName);
 	}
 	/**
 	 * Fetch a registered service
@@ -157,28 +158,16 @@ final class ServiceProvider<T>
 	 * @return mixed Instance of the service
 	 * @throws HHFKException If the service is not registered
 	 */
-	public function get(string $serviceName): T
+	public static function get(string $serviceName): T
 	{
-		$service = $this->_services->get($serviceName);
+		$service = self::$_services->get($serviceName);
 		if ($service === null) {
 			throw new NotRegisteredException("Service '" . $serviceName . "' requested is not registered");
 		}
 		return $service;
 	}
 
-	/**
-	 * Return an instance of the ServiceProvider
-	 * @return ServiceProvider
-	 */
-	public static function getInstance(): ?this
-	{
-		if (!isset(self::$_instance)) {
-			self::$_instance = new static();
-		}
-		return self::$_instance;
-	}
-
-	protected Map<string, T> $_services;
-	private Vector<Pair<string, array>> $_preparedService;
-	private static ?ServiceProvider $_instance = null;
+	private static bool $_booted = false;
+	private static Map<string, T> $_services = Map{};
+	private static Vector<Pair<string, array>> $_waiting = Vector{};
 }

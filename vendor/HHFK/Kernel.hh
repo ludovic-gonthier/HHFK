@@ -3,7 +3,6 @@
 namespace HHFK;
 
 use HHFK\Module\AModule;
-use HHFK\Service\ServiceProvider;
 use HHFK\Service\Service;
 
 class Kernel
@@ -22,13 +21,13 @@ class Kernel
 	{
 		## TODO load the correct loacle from the configuration file
 		\date_default_timezone_set("Europe/Paris");
-		$parser = $this->_provider->get("parser");
+		$parser = Service::get("parser");
 		$services = $parser->parseFile("../conf/services.ini");
-		$this->_provider->prepare($services);
+		Service::prepare($services);
 		
 		// Importing routes configuration
 		$routes = $parser->parseFile("../conf/routes.ini");
-		$this->_provider->get("router")->prepare($routes);
+		Service::get("router")->prepare($routes);
 	}
 
 	/**
@@ -36,11 +35,10 @@ class Kernel
 	 */
 	protected function init():void
 	{
-		$this->_provider = ServiceProvider::getInstance();
 		// Providing the router as a service
-		$this->_provider->register("router", "HHFK\Route\Router");
+		Service::register("router", "HHFK\Route\Router");
 		// Provide the INI file parser as a service
-		$this->_provider->register("parser", "HHFK\Parser\IniFileParser");
+		Service::register("parser", "HHFK\Parser\IniFileParser");
 
 		self::$_modules = Vector<AModule>{
 			new \Test\TestModule\TestModule(),
@@ -55,16 +53,11 @@ class Kernel
 	protected function boot(): void
 	{
 		foreach (self::$_modules as $module) {
-			$module->boot($this->_provider);
+			$module->boot();
 		}
-		$this->_provider->boot();
+		Service::boot();
 	}
 
-
-	public function provider(): ServiceProvider
-	{
-		return $this->_provider;
-	}
 	/**
 	 * Fetch a loaded module
 	 * 
@@ -91,6 +84,5 @@ class Kernel
 		return self::$_modules;
 	}
 
-	protected ServiceProvider $_provider;
 	protected static Vector<AModule> $_modules;
 }
