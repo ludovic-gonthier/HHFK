@@ -27,6 +27,7 @@ class Kernel
 		## TODO load the correct loacle from the configuration file
 		\date_default_timezone_set("Europe/Paris");
 		$parser = Service::get("parser");
+		//Importing services configuration
 		$services = $parser->parseFile(self::CONF_PATH . self::CONF_SERVICES_FILE);
 		Service::prepare($services);
 		
@@ -60,6 +61,7 @@ class Kernel
 		foreach (self::$_modules as $module) {
 			$module->boot();
 		}
+		// Late booting for all the applications Service to be registered in the Service class
 		Service::boot();
 	}
 
