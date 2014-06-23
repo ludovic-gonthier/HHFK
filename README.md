@@ -10,8 +10,12 @@ Externals modules can be added using **composer**.
 
 It tries the best to run on HHVM strict mode to speed your application up.
 
-##Documentaton
+### Documentaton
 Coming soon!
 
-## Wanna help?
+### Wanna help?
 Please feel free to participate to the project!
+
+### Authors
+@ludovic-gonthier
+
