@@ -1,6 +1,8 @@
 <?hh //strict
 namespace HHFK\Module;
 
+use HHFK\Kernel;
+
 use HHFK\Controller\AController;
 use HHFK\Parser\IniFileParser;
 use HHFK\Service\Service;
