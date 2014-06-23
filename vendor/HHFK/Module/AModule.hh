@@ -46,13 +46,13 @@ abstract class AModule
 	protected function loadConfigurations() : void
 	{
 		$parser = Service::get("parser");
-		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.ini";
+		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . Kernel::CONF_SERVICES_FILE;
 		if (file_exists($servicesConfig)){
 			$services = $parser->parseFile($servicesConfig);
 			Service::prepare($services);
 		}
 		// Load the Module's route configuration if any
-		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . "routes.ini";
+		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . Kernel::CONF_ROUTES_FILE;
 		if (file_exists($routesConfig)) {
 			$routes = $parser->parseFile($routesConfig);
 			Service::get("router")->prepare($routes);

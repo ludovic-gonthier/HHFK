@@ -7,6 +7,11 @@ use HHFK\Service\Service;
 
 class Kernel
 {
+	const string CONF_PATH = "../conf/";
+	const string CONF_SERVICES_FILE = "services.ini",
+				 CONF_ROUTES_FILE = "routes.ini",
+				 CONF_APPLICATION_FILE = "application.ini"
+
 	## TODO : instantiate with the environment variable
 	public function __construct()
 	{
@@ -22,11 +27,11 @@ class Kernel
 		## TODO load the correct loacle from the configuration file
 		\date_default_timezone_set("Europe/Paris");
 		$parser = Service::get("parser");
-		$services = $parser->parseFile("../conf/services.ini");
+		$services = $parser->parseFile(self::CONF_PATH . self::CONF_SERVICES_FILE);
 		Service::prepare($services);
 		
 		// Importing routes configuration
-		$routes = $parser->parseFile("../conf/routes.ini");
+		$routes = $parser->parseFile(self::CONF_PATH . self::CONF_ROUTES_FILE);
 		Service::get("router")->prepare($routes);
 	}
 
