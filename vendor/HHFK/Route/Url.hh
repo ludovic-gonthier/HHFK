@@ -30,7 +30,7 @@ class Url{
 		$this->_user     = isset($parsed[self::URL_USER]) ? $parsed[self::URL_USER] : '';
 		$this->_pass     = isset($parsed[self::URL_PASS]) ? $parsed[self::URL_PASS]  : '';
 		$this->_path     = isset($parsed[self::URL_PATH]) ? $parsed[self::URL_PATH] : '';
-		$this->_query    = isset($parsed[self::URL_QUERY]) ? $parsed[self::URL_QUERY] : '';
+		$this->_query    = isset($parsed[self::URL_QUERY]) ? \urldecode($parsed[self::URL_QUERY]) : '';
 		$this->_fragment = isset($parsed[self::URL_FRAGMENT]) ? $parsed[self::URL_FRAGMENT] : '';
 	}
 	/**
