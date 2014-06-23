@@ -15,7 +15,7 @@ class Response
 	 * -> Setting the correct HTTP header
 	 * -> Displaying the template
 	 */
-	public function send(): void
+	public function send() : void
 	{
 		$this->_view->display();
 	}
@@ -28,7 +28,7 @@ class Response
 	 * 
 	 * @return Response
 	 */
-	public function render(string $template, AModule $module, array $data = array()): this
+	public function render(string $template, AModule $module, array $data = array()) : this
 	{
 		$directory = $module->getPath() . DIRECTORY_SEPARATOR;
 		

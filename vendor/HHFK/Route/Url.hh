@@ -37,7 +37,7 @@ class Url{
 	 * print the URL
 	 * @return string
 	 */
-	public function __toString(): string
+	public function __toString() : string
 	{
 		$pass = ($this->_user || $this->_pass) ? ':' . $this->_pass . "@" : '';
 		$port = $this->_port === 0 ? '' : ':' . $this->_port;
@@ -50,7 +50,7 @@ class Url{
 	 * Return the scheme of the URL
 	 * @return string
 	 */
-	public function getScheme(): string
+	public function getScheme() : string
 	{
 		return $this->_scheme;
 	}
@@ -58,7 +58,7 @@ class Url{
 	 * Return the port of the URL
 	 * @return int
 	 */
-	public function getPort(): int
+	public function getPort() : int
 	{
 		return $this->_port;
 	}
@@ -66,7 +66,7 @@ class Url{
 	 * Return the host of the URL
 	 * @return string
 	 */
-	public function getHost(): string
+	public function getHost() : string
 	{
 		return $this->_host;
 	}
@@ -74,7 +74,7 @@ class Url{
 	 * Return the user of the URL
 	 * @return string
 	 */
-	public function getUser(): string
+	public function getUser() : string
 	{
 		return $this->_user;
 	}
@@ -82,7 +82,7 @@ class Url{
 	 * Return the pass of the URL
 	 * @return string
 	 */
-	public function getPass(): string
+	public function getPass() : string
 	{
 		return $this->_pass;
 	}
@@ -90,7 +90,7 @@ class Url{
 	 * Return the query of the URL
 	 * @return string
 	 */
-	public function getQuery(): string
+	public function getQuery() : string
 	{
 		return $this->_query;
 	}
@@ -98,7 +98,7 @@ class Url{
 	 * Return the path of the URL
 	 * @return string
 	 */
-	public function getPath(): string
+	public function getPath() : string
 	{
 		return $this->_path;
 	}
@@ -106,7 +106,7 @@ class Url{
 	 * Return the fragment of the URL
 	 * @return string
 	 */
-	public function getFragment(): string
+	public function getFragment() : string
 	{
 		return $this->_fragment;
 	}

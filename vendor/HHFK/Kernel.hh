@@ -17,7 +17,7 @@ class Kernel
 	/**
 	 * Load the configuration of the application
 	 */
-	protected function configure():void
+	protected function configure() :void
 	{
 		## TODO load the correct loacle from the configuration file
 		\date_default_timezone_set("Europe/Paris");
@@ -33,7 +33,7 @@ class Kernel
 	/**
 	 * Initialise the modules and the service provider of the application
 	 */
-	protected function init():void
+	protected function init() :void
 	{
 		// Providing the router as a service
 		Service::register("router", "HHFK\Route\Router");
@@ -50,7 +50,7 @@ class Kernel
 	 * Boot the module registered in the Kernel
 	 * 
 	 */
-	protected function boot(): void
+	protected function boot() : void
 	{
 		foreach (self::$_modules as $module) {
 			$module->boot();
@@ -65,7 +65,7 @@ class Kernel
 	 * 
 	 * @return AModule|null The wanted module or null if not present
 	 */
-	public static function getModule(string $moduleName): ?AModule
+	public static function getModule(string $moduleName) : ?AModule
 	{
 		foreach (self::$_modules as $module) {
 			if ($module->getName() === $moduleName){
@@ -79,7 +79,7 @@ class Kernel
 	 * 
 	 * @return Vector<AModule> Loaded modules
 	 */
-	public static function getModules(): Vector<AModule>
+	public static function getModules() : Vector<AModule>
 	{
 		return self::$_modules;
 	}

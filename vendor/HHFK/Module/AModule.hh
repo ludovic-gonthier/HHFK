@@ -29,7 +29,7 @@ abstract class AModule
 	 * 
 	 * @param  ServiceProvider $provider
 	 */
-	public function boot():void
+	public function boot() :void
 	{
 		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
 		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
@@ -43,7 +43,7 @@ abstract class AModule
 	 * Must be put in the "Configuration" folder of the module
 	 * @param  ServiceProvider $provider
 	 */
-	protected function loadConfigurations(): void
+	protected function loadConfigurations() : void
 	{
 		$parser = Service::get("parser");
 		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . "services.ini";
@@ -63,7 +63,7 @@ abstract class AModule
 	 * Register the controller of a module
 	 * @throws BadDirectoryException If the "Controller" directory not present
 	 */
-	protected function registerControllers(): void
+	protected function registerControllers() : void
 	{
 		$files = \scandir($this->_controllerPath);
 		if ($files === false){
@@ -87,7 +87,7 @@ abstract class AModule
 	 * @param  string  $controller The controller class name to be checked
 	 * @return boolean
 	 */
-	public function hasController(string $controller): bool
+	public function hasController(string $controller) : bool
 	{
 		return $this->_controllers->linearSearch($controller) !== -1;
 	}
@@ -97,7 +97,7 @@ abstract class AModule
 	 * 
 	 * @return string namespace name
 	 */
-	public function getNamespace(): string
+	public function getNamespace() : string
 	{
 		return $this->_namespace;
 	}
@@ -106,7 +106,7 @@ abstract class AModule
 	 * Return the path of the module
 	 * @return string Path
 	 */
-	public function getPath(): string
+	public function getPath() : string
 	{
 		return $this->_path;
 	}
@@ -116,7 +116,7 @@ abstract class AModule
 	 * 
 	 * @return string Name of the module
 	 */
-	public function getName(): string
+	public function getName() : string
 	{
 		if (!isset($this->_name)) {
 			$this->_name = static::class;

@@ -17,7 +17,7 @@ class Request
 	 * 
 	 * @param  Route    $route The route to bind to the Request
 	 */
-	public function bindRoute(Route $route): void
+	public function bindRoute(Route $route) : void
 	{
 		$this->_route = $route;
 	}
@@ -26,12 +26,12 @@ class Request
 	 * 
 	 * @param  Url    $url The URL to bind to the Request
 	 */
-	public function bindUrl(Url $url): void
+	public function bindUrl(Url $url) : void
 	{
 		$this->_url = $url;
 	}
 
-	public function getBindedRoute(): ?Route
+	public function getBindedRoute() : ?Route
 	{
 		return $this->_route;
 	}
@@ -40,7 +40,7 @@ class Request
 	 * 
 	 * @return Url The url binded to the request
 	 */
-	public function getBindedUrl(): Url
+	public function getBindedUrl() : Url
 	{
 		return $this->_url;
 	}
@@ -50,7 +50,7 @@ class Request
 	 * 
 	 * @return Request Created Request
 	 */
-	public static function fromCurrentUrl(): this
+	public static function fromCurrentUrl() : this
 	{
 		return new static(new Url());
 	}

@@ -27,7 +27,7 @@ final class Service<T>
 	 * @param  array  $configuration
 	 * 
 	 */
-	public static function prepare(array $configuration): void
+	public static function prepare(array $configuration) : void
 	{
 		$parameters = (array_key_exists('parameters', $configuration) ? $configuration['parameters'] : array());
 		foreach ($configuration['services'] as $name => &$service) {
@@ -67,7 +67,7 @@ final class Service<T>
 	 */
 	##TODO Function as Class => Used by router too
 	##TODO Replace global variables
-	private static function _replaceVariables(string $value, array $parameters): string
+	private static function _replaceVariables(string $value, array $parameters) : string
 	{
 		$initialPattern = $value; // For correct pattern in exception
         $openBracket = strpos($value, self::OPEN_LOCAL_VARIABLE);
@@ -91,7 +91,7 @@ final class Service<T>
 	 * 
 	 * @param  Service $service
 	 */
-	public static function register(string $name, string $class, array $parameters = array()):void
+	public static function register(string $name, string $class, array $parameters = array()) :void
 	{
 		foreach ($parameters as $label => $parameter) {
 			// If a parameter is a registered class
@@ -137,7 +137,7 @@ final class Service<T>
 	 * Return the registered service in the provider
 	 * @return ImmMap<string, Service>
 	 */
-	public static function registered():ImmMap<string, T>
+	public static function registered() :ImmMap<string, T>
 	{
 		return self::$_services->toImmMap();
 	}
@@ -147,7 +147,7 @@ final class Service<T>
 	 * @param  string $serviceName
 	 * @return bool
 	 */
-	public static function exists(string $serviceName): bool
+	public static function exists(string $serviceName) : bool
 	{
 		return self::$_services->contains($serviceName);
 	}
@@ -158,7 +158,7 @@ final class Service<T>
 	 * @return mixed Instance of the service
 	 * @throws HHFKException If the service is not registered
 	 */
-	public static function get(string $serviceName): T
+	public static function get(string $serviceName) : T
 	{
 		$service = self::$_services->get($serviceName);
 		if ($service === null) {

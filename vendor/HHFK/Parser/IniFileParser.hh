@@ -16,7 +16,7 @@ class IniFileParser
 	 * @return The array containing the configuration lodaded from the file
 	 * @throws FileFormatException If parse_ini_file fails
 	 */
-	public function parseFile(string $filename): array
+	public function parseFile(string $filename) : array
 	{
 		$ini = \parse_ini_file($filename, true, INI_SCANNER_NORMAL);
 		if ($ini === false){

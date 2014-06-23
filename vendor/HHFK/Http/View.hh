@@ -15,7 +15,7 @@ class View
 	 * @param  string $file
 	 * @param  array $data
 	 */
-	public function build(string $file, array $data): void
+	public function build(string $file, array $data) : void
 	{
 		extract($data);
 		ob_start();
@@ -29,7 +29,7 @@ class View
 	 * Display the view
 	 * @return [type]
 	 */
-	public function display():void
+	public function display() :void
 	{
 		echo $this->_html;
 	}

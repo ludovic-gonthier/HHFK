@@ -6,7 +6,7 @@ use HHFK\Http\Response;
 
 class HomeController extends AController
 {
-	public function index(): Response
+	public function index() : Response
 	{
 	}
 }

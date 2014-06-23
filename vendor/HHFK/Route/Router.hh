@@ -27,7 +27,7 @@ class Router{
      * @throws Exception If no pattern given in the configuration array
      * @throws Exception If no controller given in the configuration array
      */
-    public function prepare(array $configuration): void
+    public function prepare(array $configuration) : void
     {
         foreach ($configuration as $name => $parameters) {
             if (!array_key_exists("pattern", $parameters)) {
@@ -59,7 +59,7 @@ class Router{
      * 
      * @return Map<string, Route> The map containing the known route
      */
-    public function provided(): Map<string, Route>
+    public function provided() : Map<string, Route>
     {
         return $this->_routes;
     }
@@ -74,7 +74,7 @@ class Router{
      * @return Response The response of the route call
      * @throws Exception If trying to call an unknown controller's action
      */
-    public function resolve(Request $request): Response
+    public function resolve(Request $request) : Response
     {
         $route = $this->fetchRoute($request->getBindedUrl());
         $request->bindRoute($route);
@@ -98,7 +98,7 @@ class Router{
      * e.g: /user/{user_id}/
      * @throws Exception If Pattern not correctly formatted
      */
-    private function replaceVariableInPattern(string &$pattern): void
+    private function replaceVariableInPattern(string &$pattern) : void
     {
         $initialPattern = $pattern; // For correct pattern in exception
         $openBracket = strpos($pattern, self::OPEN_BRACKET);
@@ -121,7 +121,7 @@ class Router{
      * @return Route The found route
      * @throws NotFoundException If no route found
      */
-    private function fetchRoute(Url $url): Route
+    private function fetchRoute(Url $url) : Route
     {
         $route = $this->_routes->get($url->getPath());
         if ($route !== null) {

@@ -33,7 +33,7 @@ class Route
 	 * Return the pattern of the route
 	 * @return string
 	 */
-	public function getPattern(): string
+	public function getPattern() : string
 	{
 		return $this->_pattern;
 	}
@@ -43,7 +43,7 @@ class Route
 	 * @param string $requestType
 	 * @return Route Current instance
 	 */
-	public function setRequestType(string $requestType): this
+	public function setRequestType(string $requestType) : this
 	{
 		$this->_requestType = $requestType;
 		return $this;
@@ -53,7 +53,7 @@ class Route
 	 * Return the request type accepted for this route
 	 * @return string
 	 */
-	public function getRequestType(): string
+	public function getRequestType() : string
 	{
 		return $this->_requestType;
 	}
@@ -63,7 +63,7 @@ class Route
 	 * @param string $name
 	 * @return Route Current instance
 	 */
-	public function setName(string $name): this
+	public function setName(string $name) : this
 	{
 		$this->_name = $name;
 		return $this;
@@ -72,7 +72,7 @@ class Route
 	 * return the name of the route
 	 * @return string
 	 */
-	public function getName(): string
+	public function getName() : string
 	{
 		return $this->_name;
 	}
@@ -80,7 +80,7 @@ class Route
 	 * Check weither the Controller is a valid controller or not
 	 * @throws HHFKException If the controller is not valid
 	 */
-	protected function checkIsValidController():void
+	protected function checkIsValidController() :void
 	{
 		if (!class_exists($this->_controller)) {
 			throw new ClassNotFoundException($this->_controller . ": Class not found.");
@@ -93,7 +93,7 @@ class Route
 	 * @param string $controller
 	 * @return Route Current Instance
 	 */
-	public function setController(string $controller): this
+	public function setController(string $controller) : this
 	{
 		$this->_controller = $controller;
 		$this->checkIsValidController();
@@ -103,7 +103,7 @@ class Route
 	 * Return the controller attached to the route
 	 * @return string
 	 */
-	public function getController(): string
+	public function getController() : string
 	{
 		return $this->_controller;
 	}
@@ -114,10 +114,10 @@ class Route
 	 * @throws HHFKException If the action doesn't exists in the controller
 	 * @return Route Current Instance
 	 */
-	public function setAction(string $action): this
+	public function setAction(string $action) : this
 	{
 		if (!method_exists($this->_controller, $action)) {
-			throw new MethodNotFoundException($this->_controller . "::" . $action . "(): Not a method of the class.");
+			throw new MethodNotFoundException($this->_controller . "::" . $action . "() : Not a method of the class.");
 		}
 		$this->_action = $action;
 		return $this;
@@ -126,7 +126,7 @@ class Route
 	 * Return the action to call on the route
 	 * @return string
 	 */
-	public function getAction(): string
+	public function getAction() : string
 	{
 		return $this->_action;
 	}
@@ -137,7 +137,7 @@ class Route
 	 * @param mixed  $value
 	 * @return Route Current Instance
 	 */
-	public function addData(string $key, mixed $value): this
+	public function addData(string $key, mixed $value) : this
 	{
 		$this->_datas->add(Pair{$key, $value});
 		return $this;
@@ -148,7 +148,7 @@ class Route
 	 * @param  string] $key
 	 * @return Route Current Instance
 	 */
-	public function removeData(string $key): this
+	public function removeData(string $key) : this
 	{
 		$this->_datas->remove($key);
 		return $this;
@@ -158,7 +158,7 @@ class Route
 	 * @param  string $key
 	 * @return mixed value of the data or null
 	 */
-	public function getData(string $key): ?mixed
+	public function getData(string $key) : ?mixed
 	{
 		if ($this->_datas->contains($key)){
 			return $this->_datas->get($key);
@@ -169,7 +169,7 @@ class Route
 	 * Return all the datas attached to the route
 	 * @return ImmMap<string, mixed>
 	 */
-	public function getDatas(): ImmMap<string, mixed>
+	public function getDatas() : ImmMap<string, mixed>
 	{
 		return $this->_datas->toImmMap();
 	}
