@@ -17,5 +17,5 @@ Coming soon!
 Please feel free to participate to the project!
 
 ### Authors
-@ludovic-gonthier
+[@ludovic-gonthier](https://github.com/ludovic-gonthier)
 
