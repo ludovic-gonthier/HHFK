@@ -7,6 +7,19 @@ namespace HHFK;
 ##TODO Serialize session
 class Server<T>
 {
+	public static function __callStatic(string $name, array $arguments = array()) : mixed
+	{
+		var_dump("lol???");die;
+		if (empty(self::$_server)) {
+			var_dump("lol???");
+			self::$_server = $_SERVER;
+		}
+		if (in_array($name, array("get", "set", "all"))) {
+			self::$name($arguments);
+		}
+		## TODO think if exception or false
+		return false;
+	}
 	/**
 	 * Set a variable session
 	 *
@@ -31,5 +44,15 @@ class Server<T>
 		self::$_server[$key] = $value;
 	}
 
-	private array $_server = $_SERVER;
+	/**
+	 * Fetch all the value of the $_SERVER variable
+	 * 
+	 * @return array server variables
+	 */
+	public static function all() : ?array
+	{
+		return self::$_server;
+	}
+
+	private static array $_server = $_SERVER;
 }

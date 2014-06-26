@@ -2,6 +2,8 @@
 
 namespace HHFK;
 
+use HHFK\Server;
+
 use HHFK\Module\AModule;
 use HHFK\Service\Service;
 
@@ -24,6 +26,8 @@ class Kernel
 		$this->init();
 		$this->configure();
 		$this->boot();
+
+		Service::get("debugger")->dump(Server::all());
 	}
 	/**
 	 * Load the configuration of the application
@@ -61,7 +65,7 @@ class Kernel
 
 		// Importing application environment configuration
 		$configuration = $parser->parseFile(self::CONF_PATH . self::CONF_APPLICATION_FILE);
-		Config::populate(new Map($configuration));
+		Config::populate($configuration);
 
 		// In debug mode, add the debugger as a service
 		if (Config::get("debug") == true) {
