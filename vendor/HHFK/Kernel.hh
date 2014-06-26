@@ -64,7 +64,7 @@ class Kernel
 		Config::populate(new Map($configuration));
 
 		// In debug mode, add the debugger as a service
-		if (Config::get("debug") === true) {
+		if (Config::get("debug") == true) {
 			Service::register("debugger", "HHFK\Debug\Debugger");
 		}
 
