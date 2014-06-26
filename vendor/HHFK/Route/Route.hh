@@ -1,6 +1,8 @@
 <?hh //strict
 namespace HHFK\Route;
 
+use HHFK\Http\Request;
+
 use HHFK\Controller\Controller;
 
 use HHFK\Exception\HHFKException;
@@ -9,12 +11,6 @@ use HHFK\Exception\Oop\MethodNotFoundException;
 
 class Route
 {
-	const string 	GET = "GET",
-		  			POST = "POST",
-		  			UPDATE = "UPDATE",
-		  			DELETE = "DELETE",
-		  			PUT = "PUT";
-
 	const string 	DEFAULT_ACTION = "index";
 
 	public function __construct(
@@ -24,7 +20,7 @@ class Route
 		// If the controller is not a valid class
 		$this->_datas = new Map();
 		$this->_name = "";
-		$this->_requestType = self::GET;
+		$this->_requestType = Request::GET;
 		$this->_action = self::DEFAULT_ACTION;
 		$this->checkIsValidController();
 	}

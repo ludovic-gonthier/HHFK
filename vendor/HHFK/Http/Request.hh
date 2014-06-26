@@ -5,7 +5,14 @@ use HHFK\Route\Route;
 use HHFK\Route\Url;
 
 class Request
-{
+{	
+	const string 	GET = "GET",
+		  			POST = "POST",
+		  			UPDATE = "UPDATE",
+		  			DELETE = "DELETE",
+		  			PUT = "PUT",
+		  			ALL = "ALL";
+
 	public function __construct(Url $url)
 	{
 		$this->_url = $url;
@@ -43,6 +50,11 @@ class Request
 	public function getBindedUrl() : Url
 	{
 		return $this->_url;
+	}
+
+	public function parameter(string $key, string $request = self::ALL) : void
+	{
+		## TODO
 	}
 
 	/**
