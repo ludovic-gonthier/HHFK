@@ -17,10 +17,9 @@ class Kernel
 	## TODO : instantiate with the environment variable
 	public function __construct()
 	{
-		self::$_modules = Vector<AModule>{
-			new \Test\TestModule\TestModule(),
-			new \Test\HomeModule\HomeModule()
-		};
+		self::$_modules = new Vector();
+		self::$_modules->add(new \Test\TestModule\TestModule());
+		self::$_modules->add(new \Test\HomeModule\HomeModule());
 
 		$this->init();
 		$this->configure();
