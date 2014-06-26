@@ -34,6 +34,8 @@ abstract class AController{
 			## TODO Correct Exception
 			throw new HHFKException("Your controller is not attach to a module.");
 		}
+		## TODO Set constraint here
+		
 	}
 
 	## TODO pass the correct argument
