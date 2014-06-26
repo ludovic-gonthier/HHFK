@@ -1,14 +1,16 @@
 <?hh //strict
 namespace HHFK\Http\Constraint;
 
-abstract class AConstraint<T>
+abstract class Constraint<T>
 {
-	public function __construct(T $expected)
+	public function __construct(T $expect)
 	{
-		$this->_expect = $expected;
+		$this->_expect = $expect;
 	}
-	
-	abstract public function respect(T $given) : bool;
+	public function toRespect((T $value) :bool) $callback) : bool
+	{
+		return $callback();
+	}
 
 	protected T $_expect;
 }
