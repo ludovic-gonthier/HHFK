@@ -7,7 +7,6 @@ class Logger
 {
 	public function __construct(string $log_path)
 	{
-		// var_dump($log_path);die;
 		$this->_logger = new \Monolog\Logger("application");
 		$this->_logger->pushHandler(new StreamHandler($log_path, \Monolog\Logger::INFO));
 
