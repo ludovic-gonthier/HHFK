@@ -1,6 +1,8 @@
 <?hh //strict
 namespace HHFK\Route;
 
+use HHFK\Server;
+
 use HHFK\Exception\HHFKException;
 
 class Url{
@@ -15,10 +17,13 @@ class Url{
 
 	public function __construct(string $url = "")
 	{
-		if (empty($url) && array_key_exists('REQUEST_URI', $_SERVER) && array_key_exists('HTTP_HOST', $_SERVER)
-		  && array_key_exists('HTTPS', $_SERVER)) {
-			$hhtps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? "s" : "";
-			$url = sprintf("http%s://%s%s", $hhtps, $_SERVER["HTTP_HOST"], $_SERVER["REQUEST_URI"]);
+		$server = Server::all();
+		if (empty($url)
+		   && array_key_exists('REQUEST_URI', $server)
+		   && array_key_exists('HTTP_HOST', $server)
+		   && array_key_exists('HTTPS', $server)) {
+			$hhtps = (!empty($server['HTTPS']) && $server['HTTPS'] == 'on') ? "s" : "";
+			$url = sprintf("http%s://%s%s", $hhtps, $server["HTTP_HOST"], $server["REQUEST_URI"]);
 		}
 
 		if (($parsed = \parse_url($url)) === false){
