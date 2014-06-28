@@ -6,5 +6,5 @@ namespace HHFK;
  */
 class Server<T> extends Config
 {
-	protected static Map<string, T> $_configuration = Map{};
+    protected static Map<string, T> $_configuration = Map{};
 }

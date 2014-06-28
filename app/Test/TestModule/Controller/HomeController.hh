@@ -6,8 +6,8 @@ use HHFK\Http\Response;
 
 class HomeController extends AController
 {
-	public function index() : Response
-	{
-		return $this->render("index");
-	}
+    public function index() : Response
+    {
+        return $this->render("index");
+    }
 }

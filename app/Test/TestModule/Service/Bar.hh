@@ -3,11 +3,11 @@ namespace Test\TestModule\Service;
 
 class Bar
 {
-	public function __construct()
-	{
-	}
-	public function foo() : string
-	{
-		return "test";
-	}
+    public function __construct()
+    {
+    }
+    public function foo() : string
+    {
+        return "test";
+    }
 }
