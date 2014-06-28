@@ -45,7 +45,7 @@ class Router{
             }
             if (array_key_exists("options", $parameters) && array_key_exists("method", $parameters["options"])) {
                 ## TODO Set multiple authorised request for a route
-                $route->setRequestType($parameters["options"]["method"]);
+                $route->setHttpMethod($parameters["options"]["method"]);
             }
             if (array_key_exists("datas", $parameters)) {
                 foreach ($parameters["datas"] as $key => $value) {

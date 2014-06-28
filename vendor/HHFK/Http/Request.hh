@@ -4,15 +4,8 @@ namespace HHFK\Http;
 use HHFK\Route\Route;
 use HHFK\Route\Url;
 
-class Request
-{    
-    const string     GET = "GET",
-                      POST = "POST",
-                      UPDATE = "UPDATE",
-                      DELETE = "DELETE",
-                      PUT = "PUT",
-                      ALL = "ALL";
-
+class Request implements Method, Code
+{
     public function __construct(Url $url)
     {
         $this->_url = $url;
@@ -52,7 +45,7 @@ class Request
         return $this->_url;
     }
 
-    public function parameter(string $key, string $request = self::ALL) : void
+    public function parameter(string $key, HttpMethod $method = GET) : void
     {
         ## TODO
     }

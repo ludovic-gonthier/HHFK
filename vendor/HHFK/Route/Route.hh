@@ -2,6 +2,7 @@
 namespace HHFK\Route;
 
 use HHFK\Http\Request;
+use HHFK\Http\HttpMethod; // get the HttpMethod alias
 
 use HHFK\Controller\Controller;
 
@@ -35,13 +36,13 @@ class Route
     }
 
     /**
-     * Set the request type accepted for this route
-     * @param string $requestType
+     * Set the request methods accepted for this route
+     * @param HttpMethode $method
      * @return Route Current instance
      */
-    public function setRequestType(string $requestType) : this
+    public function setHttpMethod(HttpMethod $method) : this
     {
-        $this->_requestType = $requestType;
+        $this->_method = $method;
         return $this;
     }
 
@@ -49,9 +50,9 @@ class Route
      * Return the request type accepted for this route
      * @return string
      */
-    public function getRequestType() : string
+    public function getHttpMethod() : HttpMethod
     {
-        return $this->_requestType;
+        return $this->_method;
     }
 
     /**
@@ -171,7 +172,7 @@ class Route
     }
 
     private string $_name;
-    private string $_requestType;
+    private HttpMethod $_method;
     private string $_action;
     private Map<string, mixed> $_datas;
 }
