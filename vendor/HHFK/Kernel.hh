@@ -16,7 +16,6 @@ class Kernel
                  CONF_ROUTES_FILE = "routes.ini",
                  CONF_APPLICATION_FILE = "application.ini";
 
-    ## TODO : instantiate with the environment variable
     public function __construct()
     {
         self::$_modules = new Vector();
