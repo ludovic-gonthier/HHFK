@@ -18,11 +18,11 @@ class Url{
 	public function __construct(string $url = "")
 	{
 		$server = Server::all();
-		if (empty($url)
+		if ($url === ""
 		   && array_key_exists('REQUEST_URI', $server)
 		   && array_key_exists('HTTP_HOST', $server)
 		   && array_key_exists('HTTPS', $server)) {
-			$hhtps = (!empty($server['HTTPS']) && $server['HTTPS'] == 'on') ? "s" : "";
+			$hhtps = ($server['HTTPS'] !== "" && $server['HTTPS'] == 'on') ? "s" : "";
 			$url = sprintf("http%s://%s%s", $hhtps, $server["HTTP_HOST"], $server["REQUEST_URI"]);
 		}
 

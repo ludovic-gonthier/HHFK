@@ -130,8 +130,7 @@ final class Service<T>
 		if (class_exists($class) === false) {
 			throw new ClassNotFoundException("'". $class . "': no such class declared.");
 		}
-		$reflect = new \Reflectionclass($class);
-		self::$_services[$name] = $reflect->newInstanceArgs($parameters);
+		self::$_services[$name] = (new \ReflectionClass($class))->newInstanceArgs($parameters);
 	}
 	/**
 	 * Return the registered service in the provider

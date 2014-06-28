@@ -1,9 +1,11 @@
 <?hh //strict
 namespace HHFK\Route;
 
+// use HHFK\Exception as E;
 use HHFK\Exception\Http\NotFoundException;
 use HHFK\Exception\Oop\MethodNotFoundException;
 use HHFK\Exception\Route\BadConfigurationException;
+use HHFK\Exception\Route\BadPatternFormatException;
 
 use HHFK\Http\Response;
 use HHFK\Http\Request;
@@ -78,7 +80,7 @@ class Router{
     {
         $route = $this->fetchRoute($request->getBindedUrl());
         $request->bindRoute($route);
-        $controller = new ($route->getController())($request);
+        $controller = (new \ReflectionClass($route->getController()))->newInstance($request);
        ## TODO Check if authorised request
 
         Service::get("logger")->inform(static::class . "->" . $route->getAction());
@@ -96,9 +98,11 @@ class Router{
      * 
      * @param  string $pattern Pattern of the URL
      * e.g: /user/{user_id}/
+     *
+     * @return string The formatted pattern
      * @throws Exception If Pattern not correctly formatted
      */
-    private function replaceVariableInPattern(string &$pattern) : void
+    private function replaceVariableInPattern(string $pattern) : string
     {
         $initialPattern = $pattern; // For correct pattern in exception
         $openBracket = strpos($pattern, self::OPEN_BRACKET);
@@ -112,11 +116,12 @@ class Router{
 
             $openBracket = strpos($pattern, self::OPEN_BRACKET);
         }
+        return $pattern;
     }
 
     /**
      * Find the correct route for the given URL
-     * 
+     *
      * @param  Url    $url
      * @return Route The found route
      * @throws NotFoundException If no route found
@@ -129,7 +134,7 @@ class Router{
         }
 
         foreach ($this->_routes as $pattern => $route) {
-            $this->replaceVariableInPattern($pattern);
+            $pattern = $this->replaceVariableInPattern($pattern);
             $regexp = "/^" . str_replace('/', "\/", $pattern) . "$/";
             $match = array();
             if (preg_match($regexp, $url->getPath(), $match)) {

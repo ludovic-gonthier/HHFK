@@ -33,8 +33,8 @@ abstract class AModule
 	 */
 	public function boot() :void
 	{
-		$this->_controllerPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
-		$this->_configurationPath = $this->getPath() . DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
+		$this->_controllerPath = $this->getPath() . \DIRECTORY_SEPARATOR . self::DEFAULT_CONTROLLER_FOLDER;
+		$this->_configurationPath = $this->getPath() . \DIRECTORY_SEPARATOR . self::DEFAULT_CONFIGURATION_FOLDER;
 
 		$this->loadConfigurations();
 		$this->registerControllers();
@@ -48,13 +48,13 @@ abstract class AModule
 	protected function loadConfigurations() : void
 	{
 		$parser = Service::get("parser");
-		$servicesConfig = $this->_configurationPath . DIRECTORY_SEPARATOR . Kernel::CONF_SERVICES_FILE;
+		$servicesConfig = $this->_configurationPath . \DIRECTORY_SEPARATOR . Kernel::CONF_SERVICES_FILE;
 		if (file_exists($servicesConfig)){
 			$services = $parser->parseFile($servicesConfig);
 			Service::prepare($services);
 		}
 		// Load the Module's route configuration if any
-		$routesConfig = $this->_configurationPath  . DIRECTORY_SEPARATOR . Kernel::CONF_ROUTES_FILE;
+		$routesConfig = $this->_configurationPath  . \DIRECTORY_SEPARATOR . Kernel::CONF_ROUTES_FILE;
 		if (file_exists($routesConfig)) {
 			$routes = $parser->parseFile($routesConfig);
 			Service::get("router")->prepare($routes);

@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //partial
 require_once "../vendor/autoload.php";
 
 use HHFK\Service\Service;

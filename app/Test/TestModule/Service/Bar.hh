@@ -6,7 +6,7 @@ class Bar
 	public function __construct()
 	{
 	}
-	public function foo()
+	public function foo() : string
 	{
 		return "test";
 	}

@@ -118,5 +118,5 @@ class Kernel
         return self::$_modules;
     }
 
-    protected static Vector<AModule> $_modules;
+    protected static Vector<AModule> $_modules = Vector {};
 }

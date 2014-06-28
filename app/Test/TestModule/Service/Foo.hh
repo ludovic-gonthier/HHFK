@@ -7,7 +7,7 @@ class Foo
 	{
 		$this->_bar = $bar;
 	}
-	public function bar()
+	public function bar() : Bar
 	{
 		return $this->_bar;
 	}
