@@ -5,8 +5,6 @@ use HHFK\Exception\HHFKException;
 use HHFK\Exception\Oop\ClassNotFoundException;
 use HHFK\Exception\NotRegisteredException;
 
-
-## TODO pass service provider to Controller as attributes $_services;
 final class Service<T>
 {
     const string OPEN_GLOBAL_VARIABLE = "{{",
@@ -23,9 +21,9 @@ final class Service<T>
 
     /**
      * Fille the provider with the given configuration array
-     * 
+     *
      * @param  array  $configuration
-     * 
+     *
      */
     public static function prepare(array $configuration) : void
     {
@@ -59,10 +57,10 @@ final class Service<T>
 
     /**
      * Replace configuration variable of the given value
-     * 
+     *
      * @param  string $value
      * @param  array  $parameters
-     * 
+     *
      * @return The correctly replaced value
      */
     ##TODO Function as Class => Used by router too
@@ -88,7 +86,7 @@ final class Service<T>
 
     /**
      * Register a service in the provider
-     * 
+     *
      * @param  Service $service
      */
     public static function register(string $name, string $class, array $parameters = array()) :void
@@ -102,7 +100,7 @@ final class Service<T>
             ##TODO take care of recursive Servie Registration
             if (self::exists($parameter)) {// instance of Service
                 $parameters[$label] = self::get($parameter);
-            } 
+            }
             else {
                 $pair = null;
                 foreach (self::$_waiting as $service) {
@@ -142,7 +140,7 @@ final class Service<T>
     }
     /**
      * Check if a service exists
-     * 
+     *
      * @param  string $serviceName
      * @return bool
      */
@@ -152,7 +150,7 @@ final class Service<T>
     }
     /**
      * Fetch a registered service
-     * 
+     *
      * @param  string $serviceName
      * @return mixed Instance of the service
      * @throws HHFKException If the service is not registered
