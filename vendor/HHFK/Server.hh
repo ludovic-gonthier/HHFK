@@ -6,5 +6,7 @@ namespace HHFK;
  */
 class Server<T> extends Config
 {
+    ##TODO for the most default value, create an associated function
+    // requestUri(), requestType(), host(), etc.
     protected static Map<string, T> $_configuration = Map{};
 }

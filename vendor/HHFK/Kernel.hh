@@ -69,7 +69,6 @@ class Kernel
         if (Config::get("debug") == true) {
             Service::register("debugger", "HHFK\Debug\Debugger");
         }
-        Service::get("debugger")->dump(Config::all());
 
         // Providing the router as a service
         Service::register("router", "HHFK\Route\Router");
