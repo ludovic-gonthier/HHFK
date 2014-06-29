@@ -1,8 +1,15 @@
 <?hh //strict
 namespace HHFK\Http;
 
+use HHFK\Server;
+
+use HHFK\Exception\HHFKException;
+
 use HHFK\Route\Route;
 use HHFK\Route\Url;
+
+use HHFK\Service\Service;
+
 
 class Request implements Method, Code
 {
@@ -10,11 +17,16 @@ class Request implements Method, Code
     {
         $this->_url = $url;
         $this->_route = null;
+        $this->_query = new Parameter(self::GET);
+        $currentMethod = Server::get('REQUEST_METHOD');
+        if ($currentMethod !== self::GET) {
+            $this->_parameter = new Parameter($currentMethod);
+        }
     }
 
     /**
      * Bind a Route to the request
-     * 
+     *
      * @param  Route    $route The route to bind to the Request
      */
     public function bindRoute(Route $route) : void
@@ -23,7 +35,7 @@ class Request implements Method, Code
     }
     /**
      * Bind a URL to the request
-     * 
+     *
      * @param  Url    $url The URL to bind to the Request
      */
     public function bindUrl(Url $url) : void
@@ -37,7 +49,7 @@ class Request implements Method, Code
     }
     /**
      * Return the URL binded to the request
-     * 
+     *
      * @return Url The url binded to the request
      */
     public function getBindedUrl() : Url
@@ -45,14 +57,19 @@ class Request implements Method, Code
         return $this->_url;
     }
 
-    public function parameter(string $key, HttpMethod $method = GET) : void
+    public function query() : Parameter
     {
-        ## TODO
+        return $this->_query;
+    }
+
+    public function parameter() : ?Parameter
+    {
+        return $this->_parameter;
     }
 
     /**
      * Construct a Request from teh current URL
-     * 
+     *
      * @return Request Created Request
      */
     public static function fromCurrentUrl() : this
@@ -62,4 +79,6 @@ class Request implements Method, Code
 
     protected ?Route $_route;
     protected Url $_url;
+    protected Parameter $_query,
+                        $_parameter;
 }

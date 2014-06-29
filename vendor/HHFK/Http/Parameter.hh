@@ -3,14 +3,18 @@ namespace HHFK\Http;
 
 use HHFK\Server;
 
+use HHFK\Http\HttpMethod;
+use HHFK\Http\Method;
+
 class Parameter<T>
 {
     public function __construct(HttpMethod $method)
     {
-        if ($method === GET) {
+        $this->_method = $method;
+        if ($method === Method::GET) {
             $this->_datas = $_GET;
             unset($_GET);
-        } else if ($method === POST) {
+        } else if ($method === Method::POST) {
             $this->_datas = $_POST;
             unset($_POST);
         } else {
@@ -23,11 +27,11 @@ class Parameter<T>
         }
     }
 
-    private function _isCurrentRequest(HttpMethod $method)
+    private function _isCurrentRequest()
     {
-        if ($method !== Server::get('REQUEST_METHOD')) {
+        if ($this->_method !== Server::get('REQUEST_METHOD')) {
             ##TODO correct Exception
-            throw new Exception("Can't access '" . $method . "' parameters when on a request of type '" . Server::get('REQUEST_METHOD') . "'");
+            throw new \Exception("Can't access '" . $this->_method . "' parameters when on a request of type '" . Server::get('REQUEST_METHOD') . "'");
         }
     }
 
@@ -47,6 +51,10 @@ class Parameter<T>
 
     public function get(string $key) : ?T
     {
+        if ($this->_method !== Method::GET){
+            ## TODO Exception
+            throw new \Exception("Can't access '" . Method::GET . "' parameters when on a request of type '" . Server::get('REQUEST_METHOD') . "'");
+        }
         return ($this->exists($key) ? $this->_datas[$key] : null);
     }
     public function head(string $key) : ?T
@@ -87,8 +95,9 @@ class Parameter<T>
 
     public function all() : array<string, T>
     {
-        return $this->_datas();
+        return $this->_datas;
     }
 
+    protected HttpMethod $_method;
     protected array<string, T> $_datas;
 }
