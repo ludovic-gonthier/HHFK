@@ -1,6 +1,8 @@
 <?hh //strict
 namespace HHFK\Service;
 
+use HHFK\Config;
+
 use HHFK\Exception\HHFKException;
 use HHFK\Exception\Oop\ClassNotFoundException;
 use HHFK\Exception\NotRegisteredException;
@@ -55,6 +57,24 @@ final class Service<T>
         self::$_booted = true;
     }
 
+    private static function _parseConfiguration(string $string, Pair<string, string> $delimiter, (function (string) : string) $replacer) : string
+    {
+        $initialString = $string;
+        $open = mb_strpos($string, $delimiter->at(0));
+        while ($open !== false) {
+            $close = mb_strpos($string, $delimiter->at(1));
+            if ($close === false) {
+                throw new BadPatternFormatException("Bad pattern format: mismatched closing bracket in the pattern: '" . $initialString . "'");
+            }
+            $extract = mb_substr($string, $open + mb_strlen($delimiter->at(0)),  $close - $open - mb_strlen($delimiter->at(1)));
+            $replace = $replacer($extract);
+            $string = mb_substr($string, 0, $open) . $replace . mb_substr($string, $close + mb_strlen($delimiter->at(1)));
+            // loop
+            $open = mb_strpos($string, $delimiter->at(0));
+        }
+        return $string;
+    }
+
     /**
      * Replace configuration variable of the given value
      *
@@ -67,20 +87,23 @@ final class Service<T>
     ##TODO Replace global variables
     private static function _replaceVariables(string $value, array $parameters) : string
     {
-        $initialPattern = $value; // For correct pattern in exception
-        $openBracket = strpos($value, self::OPEN_LOCAL_VARIABLE);
-        while ($openBracket !== false) {
-            $closeBracket = strpos($value, self::CLOSE_LOCAL_VARIABLE);
-            if ($closeBracket === false) {
-                throw new BadPatternFormatException("Bad pattern format: mismatched closing bracket in the pattern: '" . $initialPattern . "'");
-            }
-            $key = substr($value, $openBracket + 1,  $closeBracket - $openBracket - 1);
-            if (array_key_exists($key, $parameters)) {
-                $value = substr($value, 0, $openBracket) . $parameters[$key] . substr($value, $closeBracket + 1);
-            }
+        $localPair = Pair{self::OPEN_LOCAL_VARIABLE, self::CLOSE_LOCAL_VARIABLE};
+        $globalPair = Pair{self::OPEN_GLOBAL_VARIABLE, self::CLOSE_GLOBAL_VARIABLE};
 
-            $openBracket = strpos($value, self::OPEN_LOCAL_VARIABLE);
-        }
+        $value = self::_parseConfiguration($value, $globalPair, $key ==> {
+            if (Config::exists($key)) {
+                return Config::get($key);
+            }
+            ##TODO Correct Exception
+            throw new \Exception("Trying to fetch an unset global variable: '" . $key ."'");
+        });
+        $value = self::_parseConfiguration($value, $localPair, $key ==> {
+            if (array_key_exists($key, $parameters)) {
+                return $parameters[$key];
+            }
+            ##TODO Correct Exception
+            throw new \Exception("Trying to fetch an unset local parametr: '" . $key ."'");
+        });
         return $value;
     }
 

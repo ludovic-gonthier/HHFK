@@ -53,22 +53,24 @@ class Kernel
     {
         // Provide the INI file parser as a service
         Service::register("parser", "HHFK\Parser\IniFileParser");
-
         $parser = Service::get("parser");
-        //Importing services configuration
-        $services = $parser->parseFile(self::CONF_PATH . self::CONF_SERVICES_FILE);
-        Service::prepare($services);
 
         // Importing application environment configuration
         $configuration = $parser->parseFile(self::CONF_PATH . self::CONF_APPLICATION_FILE);
         Config::populate($configuration);
-        Server::populate($_SERVER);
-        unset($_SERVER); // To enforce the use of strict on other files
 
         // In debug mode, add the debugger as a service
         if (Config::get("debug") == true) {
             Service::register("debugger", "HHFK\Debug\Debugger");
         }
+
+        Server::populate($_SERVER);
+        unset($_SERVER); // To enforce the use of strict on other files
+
+        //Importing services configuration
+        $services = $parser->parseFile(self::CONF_PATH . self::CONF_SERVICES_FILE);
+        Service::prepare($services);
+
 
         // Providing the router as a service
         Service::register("router", "HHFK\Route\Router");
