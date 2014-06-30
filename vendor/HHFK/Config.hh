@@ -10,7 +10,7 @@ class Config<T>
     protected function __construct()
     {}
 
-    public static function populate(array $config) : void
+    public static function populate(array<string, T> $config) : void
     {
         foreach ($config as $key => $value) {
             static::$_configuration[$key] = $value;

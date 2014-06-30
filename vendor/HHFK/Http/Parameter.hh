@@ -13,10 +13,10 @@ class Parameter<T>
         $this->_method = $method;
         if ($method === Method::GET) {
             $this->_datas = $_GET;
-            unset($_GET);
+            \unset($_GET);
         } else if ($method === Method::POST) {
             $this->_datas = $_POST;
-            unset($_POST);
+            \unset($_POST);
         } else {
             $datas = \file_get_contents('php://input');
             if ($datas === false) {
@@ -36,10 +36,10 @@ class Parameter<T>
     }
     private function _escape(mixed $data) : string
     {
-        if (is_string($data)) {
-            return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-        } else if (is_array($data)) {
-            if (array_walk_recursive($data,function(&$item, $key) {
+        if (\is_string($data)) {
+            return \htmlspecialchars($data, \ENT_QUOTES, 'UTF-8');
+        } else if (\is_array($data)) {
+            if (\array_walk_recursive($data,function($item, $key) {
                 $item = $this->_escape($item);
             }) === false) {
                 throw new \Exception("Can't escape parameters of the current request.");
@@ -51,7 +51,7 @@ class Parameter<T>
 
     public function exists(string $key) : bool
     {
-        if (array_key_exists($key, $this->_datas) === false) {
+        if (\array_key_exists($key, $this->_datas) === false) {
             return false;
         }
         return true;
@@ -73,7 +73,7 @@ class Parameter<T>
     }
     public function head(string $key) : ?T
     {
-        $this->_isCurrentRequest(HEAD);
+        $this->_isCurrentRequest();
         return ($this->exists($key) ? $this->_escape($this->_datas[$key]) : null);
     }
     public function post(string $key) : T

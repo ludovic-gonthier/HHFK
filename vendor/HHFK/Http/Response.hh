@@ -8,7 +8,7 @@ class Response
     public function __construct()
     {
         $this->_view = new View();
-        header("HTTP/1.1 200 OK");
+        \header("HTTP/1.1 200 OK");
     }
     /**
      * Send the response
@@ -21,18 +21,18 @@ class Response
     }
     /**
      * Render the template file of the response
-     * 
+     *
      * @param  string  $template
      * @param  AModule $module
      * @param  array   $data
-     * 
+     *
      * @return Response
      */
     public function render(string $template, AModule $module, array $data = array()) : this
     {
-        $directory = $module->getPath() . DIRECTORY_SEPARATOR;
-        
-        $file = $directory . AModule::DEFAULT_VIEW_FOLDER . DIRECTORY_SEPARATOR . $template;
+        $directory = $module->getPath() . \DIRECTORY_SEPARATOR;
+
+        $file = $directory . AModule::DEFAULT_VIEW_FOLDER . \DIRECTORY_SEPARATOR . $template;
         $this->_view->build($file, $data);
         return $this;
     }

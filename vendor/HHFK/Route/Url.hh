@@ -29,14 +29,14 @@ class Url{
         if (($parsed = \parse_url($url)) === false){
             throw new HHFKException($url . ": Is not a valid URL");
         }
-        $this->_scheme   = isset($parsed[self::URL_SCHEME]) ? $parsed[self::URL_SCHEME] : '';
-        $this->_host     = isset($parsed[self::URL_HOST]) ? $parsed[self::URL_HOST] : '';
-        $this->_port     = isset($parsed[self::URL_PORT]) ? $parsed[self::URL_PORT] : 0;
-        $this->_user     = isset($parsed[self::URL_USER]) ? $parsed[self::URL_USER] : '';
-        $this->_pass     = isset($parsed[self::URL_PASS]) ? $parsed[self::URL_PASS]  : '';
-        $this->_path     = isset($parsed[self::URL_PATH]) ? $parsed[self::URL_PATH] : '';
-        $this->_query    = isset($parsed[self::URL_QUERY]) ? \urldecode($parsed[self::URL_QUERY]) : '';
-        $this->_fragment = isset($parsed[self::URL_FRAGMENT]) ? $parsed[self::URL_FRAGMENT] : '';
+        $this->_scheme   = array_key_exists(self::URL_SCHEME, $parsed) ? $parsed[self::URL_SCHEME] : '';
+        $this->_host     = array_key_exists(self::URL_HOST, $parsed) ? $parsed[self::URL_HOST] : '';
+        $this->_port     = array_key_exists(self::URL_PORT, $parsed) ? $parsed[self::URL_PORT] : 0;
+        $this->_user     = array_key_exists(self::URL_USER, $parsed) ? $parsed[self::URL_USER] : '';
+        $this->_pass     = array_key_exists(self::URL_PASS, $parsed) ? $parsed[self::URL_PASS]  : '';
+        $this->_path     = array_key_exists(self::URL_PATH, $parsed) ? $parsed[self::URL_PATH] : '';
+        $this->_query    = array_key_exists(self::URL_QUERY, $parsed) ? \urldecode($parsed[self::URL_QUERY]) : '';
+        $this->_fragment = array_key_exists(self::URL_FRAGMENT, $parsed) ? $parsed[self::URL_FRAGMENT] : '';
     }
     /**
      * print the URL

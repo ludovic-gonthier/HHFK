@@ -19,9 +19,9 @@ class Route
         private string $_controller)
     {
         // If the controller is not a valid class
-        $this->_datas = new Map();
+        $this->_datas = Map {};
         $this->_name = "";
-        $this->_requestType = Request::GET;
+        $this->_method = Request::GET;
         $this->_action = self::DEFAULT_ACTION;
         $this->checkIsValidController();
     }

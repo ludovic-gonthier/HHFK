@@ -18,7 +18,7 @@ class Kernel
 
     public function __construct()
     {
-        self::$_modules = new Vector();
+        self::$_modules = Vector{};
         self::$_modules->add(new \Test\TestModule\TestModule());
         self::$_modules->add(new \Test\HomeModule\HomeModule());
 
