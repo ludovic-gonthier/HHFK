@@ -83,8 +83,6 @@ final class Service<T>
      *
      * @return The correctly replaced value
      */
-    ##TODO Function as Class => Used by router too
-    ##TODO Replace global variables
     private static function _replaceVariables(string $value, array $parameters) : string
     {
         $localPair = Pair{self::OPEN_LOCAL_VARIABLE, self::CLOSE_LOCAL_VARIABLE};
