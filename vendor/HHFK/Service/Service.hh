@@ -107,6 +107,14 @@ final class Service<T>
         return $value;
     }
 
+    private static function _checkCorrectParameter(ReflectionMethod $constructor, array $parameter) : bool
+    {
+        ## TODO check for default parameter!!!
+        if (count($constructor->getParameters()) !== count($parameters)) {
+            return true;
+        }
+        return false;
+    }
     /**
      * Register a service in the provider
      *
@@ -114,6 +122,9 @@ final class Service<T>
      */
     public static function register(string $name, string $class, array $parameters = array()) :void
     {
+        if (class_exists($class) === false) {
+            throw new ClassNotFoundException("'". $class . "': no such class declared.");
+        }
         foreach ($parameters as $label => $parameter) {
             // If a parameter is a registered class
             if (class_exists($parameter) === true) {
@@ -141,17 +152,19 @@ final class Service<T>
                 }
                 self::$_waiting->removeKey(self::$_waiting->linearSearch($pair));
                 self::$_waiting->add(Pair{$name, array(
-                    'class' => $class,
-                    'arguments' => $parameters,
-                    'delayed' => true
-                )
+                        'class' => $class,
+                        'arguments' => $parameters,
+                        'delayed' => true
+                    )
                 });
             }
         }
-        if (class_exists($class) === false) {
-            throw new ClassNotFoundException("'". $class . "': no such class declared.");
+        $reflect = new \ReflectionClass($class);
+        if (self::_checkCorrectParameter($reflect->getConstructor(), $parameters) === false) {
+            ##TODO correct exception
+            throw new HHFKException("Wrong parameters number");
         }
-        self::$_services[$name] = (new \ReflectionClass($class))->newInstanceArgs($parameters);
+        self::$_services[$name] = $reflect->newInstanceArgs($parameters);
     }
     /**
      * Return the registered service in the provider
