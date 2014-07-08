@@ -105,13 +105,13 @@ final class Service<T>
         return $value;
     }
 
-    private static function _checkCorrectParameter(ReflectionMethod $constructor, array $parameter) : bool
+    private static function _checkCorrectParameter(\ReflectionMethod $constructor, array $parameters) : bool
     {
         ## TODO check for default parameter!!!
         if (count($constructor->getParameters()) !== count($parameters)) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     /**
      * Register a service in the provider
