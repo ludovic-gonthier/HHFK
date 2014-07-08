@@ -37,7 +37,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     {
         $this->_insertTestService();
         $service = Service::get(self::TEST_SERVICE_NAME);
-        $this->assertEquals(get_class($service), 'Test\TestModule\Service\Test');
+        $this->assertEquals(get_class($service), self::TEST_SERVICE_CLASS);
     }
 
     public function testServiceInstanciatedOnce()
@@ -58,13 +58,13 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     public function testRegisterServiceUnknownClass()
     {
         $this->setExpectedException('HHFK\Exception\Oop\ClassNotFoundException');
-        Service::register('test.service', 'Test\TestModule\Service\UnknownTest');
+        Service::register(self::TEST_SERVICE_NAME, 'Test\TestModule\Service\UnknownTest');
     }
 
     public function testRegisterServiceWrongParameters()
     {
         $this->setExpectedException('HHFK\Exception\HHFKException');
-        Service::register('test.service', 'Test\TestModule\Service\Test');
+        Service::register(self::TEST_SERVICE_NAME, self::TEST_SERVICE_CLASS);
     }
 
     public function testPrepareRegisterService()
