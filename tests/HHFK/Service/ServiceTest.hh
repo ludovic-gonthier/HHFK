@@ -1,5 +1,6 @@
 <?hh
 use HHFK\Service\Service;
+use HHFK\Config;
 
 class ServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -11,6 +12,13 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     {
         $reflect = new ReflectionClass(Service::class);
         $property = $reflect->getProperty('_services');
+        $property->setAccessible(true);
+        return $property;
+    }
+    private function _getWaitingContainer()
+    {
+        $reflect = new ReflectionClass(Service::class);
+        $property = $reflect->getProperty('_waiting');
         $property->setAccessible(true);
         return $property;
     }
@@ -52,7 +60,9 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     public function testRegisterServiceSuccess()
     {
         Service::register(self::TEST_SERVICE_NAME, self::TEST_SERVICE_CLASS, self::$TEST_SERVICE_ARGS);
-        $this->assertArrayHasKey(self::TEST_SERVICE_NAME, $this->_getServiceContainer()->getValue()->toArray());
+        $services = $this->_getServiceContainer()->getValue()->toArray();
+        $this->assertArrayHasKey(self::TEST_SERVICE_NAME, $services);
+        $this->assertEquals(get_class($services[self::TEST_SERVICE_NAME]), self::TEST_SERVICE_CLASS);
     }
 
     public function testRegisterServiceUnknownClass()
@@ -67,12 +77,68 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         Service::register(self::TEST_SERVICE_NAME, self::TEST_SERVICE_CLASS);
     }
 
+    private function prepareServiceAssert()
+    {
+        $waiting = $this->_getWaitingContainer()->getValue()->toArray();
+        $testService = null;
+        foreach ($waiting as $pair) {
+            if ($pair[0] === self::TEST_SERVICE_NAME) {
+                $testService =$pair;
+                break;
+            }
+        }
+        $this->assertNotEquals($testService, null);
+        $this->assertEquals(self::TEST_SERVICE_NAME, $testService[0]);
+        $this->assertEquals($testService[1]['class'], self::TEST_SERVICE_CLASS);
+        $this->assertArrayHasKey('to_foo', $testService[1]['arguments']);
+        $this->assertEquals($testService[1]['arguments']['to_foo'], 'foo');
+    }
     public function testPrepareRegisterService()
-    {}
+    {
+        $configuration = array(
+            'services' => array(
+                self::TEST_SERVICE_NAME => array(
+                    'class' => self::TEST_SERVICE_CLASS,
+                    'arguments' => self::$TEST_SERVICE_ARGS
+                )
+            )
+        );
+        Service::prepare($configuration);
+        $this->prepareServiceAssert();
+    }
 
     public function testPrepareReplaceLocalVariable()
-    {}
+    {
+        $configuration = array(
+            'parameters' => array(
+                'test.class' => self::TEST_SERVICE_CLASS
+            ),
+            'services' => array(
+                self::TEST_SERVICE_NAME => array(
+                    'class' => "{test.class}",
+                    'arguments' => self::$TEST_SERVICE_ARGS
+                )
+            )
+        );
+        Service::prepare($configuration);
+        $this->prepareServiceAssert();
+    }
 
     public function testPrepareReplaceGlobalVariable()
+    {
+        Config::set('test.class', self::TEST_SERVICE_CLASS);
+        $configuration = array(
+            'services' => array(
+                self::TEST_SERVICE_NAME => array(
+                    'class' => "{{test.class}}",
+                    'arguments' => self::$TEST_SERVICE_ARGS
+                )
+            )
+        );
+        Service::prepare($configuration);
+        $this->prepareServiceAssert();
+    }
+
+    public function testBootService()
     {}
 }
