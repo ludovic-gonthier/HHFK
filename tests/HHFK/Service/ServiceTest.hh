@@ -65,6 +65,11 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(get_class($services[self::TEST_SERVICE_NAME]), self::TEST_SERVICE_CLASS);
     }
 
+    public function testRegisterServiceAsArgument()
+    {}
+    public function testRegisterUnknownServiceAsArgument()
+    {}
+
     public function testRegisterServiceUnknownClass()
     {
         $this->setExpectedException('HHFK\Exception\Oop\ClassNotFoundException');
