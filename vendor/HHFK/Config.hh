@@ -38,6 +38,10 @@ class Config<T>
     {
         static::$_configuration[$key] = $value;
     }
+    public static function remove(string $key)
+    {
+        static::$_configuration->remove($key);
+    }
 
     protected static Map<string, T> $_configuration = Map{};
 }
