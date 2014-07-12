@@ -36,6 +36,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->_insertTestService();
         $this->assertTrue(Service::exists(self::TEST_SERVICE_NAME));
     }
+
     public function testServiceExistsNotFound()
     {
         $this->assertFalse(Service::exists('test.service.not.found'));
