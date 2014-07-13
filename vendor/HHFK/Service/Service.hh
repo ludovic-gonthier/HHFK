@@ -105,8 +105,11 @@ final class Service<T>
         return $value;
     }
 
-    private static function _checkCorrectParameter(\ReflectionMethod $constructor, array $parameters) : bool
+    private static function _checkCorrectParameter(?\ReflectionMethod $constructor, array $parameters) : bool
     {
+        if ($constructor === null) {
+            return true;
+        }
         ## TODO check for default parameter!!!
         if (count($constructor->getParameters()) !== count($parameters)) {
             return false;
