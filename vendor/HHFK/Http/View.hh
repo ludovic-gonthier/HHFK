@@ -19,7 +19,7 @@ class View
     {
         \extract($data);
         \ob_start();
-        \include($file . self::FILE_EXTENSION);
+        include($file . self::FILE_EXTENSION);
         $tampon = \ob_get_contents();
         \ob_end_clean();
         $this->_html = $tampon;

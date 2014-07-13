@@ -13,10 +13,10 @@ class Parameter<T>
         $this->_method = $method;
         if ($method === Method::GET) {
             $this->_datas = $_GET;
-            \unset($_GET);
+            unset($_GET);
         } else if ($method === Method::POST) {
             $this->_datas = $_POST;
-            \unset($_POST);
+            unset($_POST);
         } else {
             $datas = \file_get_contents('php://input');
             if ($datas === false) {
