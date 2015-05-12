@@ -1,9 +1,11 @@
 <?hh //strict
 namespace HHFK\Route;
 
+// use HHFK\Exception as E;
 use HHFK\Exception\Http\NotFoundException;
 use HHFK\Exception\Oop\MethodNotFoundException;
 use HHFK\Exception\Route\BadConfigurationException;
+use HHFK\Exception\Route\BadPatternFormatException;
 
 use HHFK\Http\Response;
 use HHFK\Http\Request;
@@ -27,7 +29,7 @@ class Router{
      * @throws Exception If no pattern given in the configuration array
      * @throws Exception If no controller given in the configuration array
      */
-    public function prepare(array $configuration): void
+    public function prepare(array $configuration) : void
     {
         foreach ($configuration as $name => $parameters) {
             if (!array_key_exists("pattern", $parameters)) {
@@ -43,7 +45,7 @@ class Router{
             }
             if (array_key_exists("options", $parameters) && array_key_exists("method", $parameters["options"])) {
                 ## TODO Set multiple authorised request for a route
-                $route->setRequestType($parameters["options"]["method"]);
+                $route->setHttpMethod($parameters["options"]["method"]);
             }
             if (array_key_exists("datas", $parameters)) {
                 foreach ($parameters["datas"] as $key => $value) {
@@ -59,7 +61,7 @@ class Router{
      * 
      * @return Map<string, Route> The map containing the known route
      */
-    public function provided(): Map<string, Route>
+    public function provided() : Map<string, Route>
     {
         return $this->_routes;
     }
@@ -74,11 +76,11 @@ class Router{
      * @return Response The response of the route call
      * @throws Exception If trying to call an unknown controller's action
      */
-    public function resolve(Request $request): Response
+    public function resolve(Request $request) : Response
     {
         $route = $this->fetchRoute($request->getBindedUrl());
         $request->bindRoute($route);
-        $controller = new ($route->getController())($request);
+        $controller = (new \ReflectionClass($route->getController()))->newInstance($request);
        ## TODO Check if authorised request
 
         Service::get("logger")->inform(static::class . "->" . $route->getAction());
@@ -96,9 +98,11 @@ class Router{
      * 
      * @param  string $pattern Pattern of the URL
      * e.g: /user/{user_id}/
+     *
+     * @return string The formatted pattern
      * @throws Exception If Pattern not correctly formatted
      */
-    private function replaceVariableInPattern(string &$pattern): void
+    private function replaceVariableInPattern(string $pattern) : string
     {
         $initialPattern = $pattern; // For correct pattern in exception
         $openBracket = strpos($pattern, self::OPEN_BRACKET);
@@ -112,16 +116,17 @@ class Router{
 
             $openBracket = strpos($pattern, self::OPEN_BRACKET);
         }
+        return $pattern;
     }
 
     /**
      * Find the correct route for the given URL
-     * 
+     *
      * @param  Url    $url
      * @return Route The found route
      * @throws NotFoundException If no route found
      */
-    private function fetchRoute(Url $url): Route
+    private function fetchRoute(Url $url) : Route
     {
         $route = $this->_routes->get($url->getPath());
         if ($route !== null) {
@@ -129,7 +134,7 @@ class Router{
         }
 
         foreach ($this->_routes as $pattern => $route) {
-            $this->replaceVariableInPattern($pattern);
+            $pattern = $this->replaceVariableInPattern($pattern);
             $regexp = "/^" . str_replace('/', "\/", $pattern) . "$/";
             $match = array();
             if (preg_match($regexp, $url->getPath(), $match)) {

@@ -1,5 +1,7 @@
 composer.lock
 sftp-config.json
+.hhconfig
+hhi/
 !vendor
 vendor/*
 !vendor/HHFK
